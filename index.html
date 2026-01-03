@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smolify | Intelligence, Distilled.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #FDFDFD;
+            --surface: rgba(255, 255, 255, 0.65);
+            --surface-hover: rgba(255, 255, 255, 0.85);
+            --text-main: #111111;
+            --text-muted: #666666;
+            --border: rgba(0, 0, 0, 0.08);
+            --accent: #000000;
+            --glow: rgba(0, 0, 0, 0.04);
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --font-main: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            /* Responsive Spacing Variables */
+            --spacing-section: clamp(4rem, 10vh, 10rem);
+            --spacing-header: clamp(6rem, 12vh, 10rem);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            cursor: default;
+            line-height: 1.5;
+        }
+
+        /* --- Background Animation --- */
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- UI Structure --- */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(253, 253, 253, 0.7);
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+            z-index: 100;
+        }
+
+        .nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.02em;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .logo img {
+            height: 32px;
+            width: auto;
+            display: block;
+        }
+
+        .nav-btn {
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-main);
+            padding: 8px 18px;
+            border-radius: 99px;
+            background: rgba(255,255,255,0.5);
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #fff;
+            border-color: #000;
+            transform: translateY(-1px);
+        }
+
+        /* --- Hero Section --- */
+        header {
+            min-height: 100vh;
+            /* Fallback for mobile browsers */
+            min-height: 100dvh; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-top: 80px; /* Offset for fixed nav */
+            padding-bottom: 2rem;
+            position: relative;
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            opacity: 0;
+            animation: fadeUp 0.8s var(--ease-out) 0.2s forwards;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 5.5rem);
+            line-height: 1.1;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeUp 0.8s var(--ease-out) 0.3s forwards;
+            background: linear-gradient(to bottom, #000 0%, #444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            width: 100%; 
+        }
+
+        p.hero-sub {
+            font-size: clamp(1rem, 1.5vw, 1.25rem);
+            color: var(--text-muted);
+            max-width: 580px;
+            line-height: 1.6;
+            /* UPDATED: Reduced bottom margin from 3rem to 1.5rem */
+            margin: 0 auto 1.5rem auto;
+            opacity: 0;
+            animation: fadeUp 0.8s var(--ease-out) 0.4s forwards;
+        }
+
+        /* --- The Terminal --- */
+        .terminal-wrapper {
+            /* UPDATED: Reduced top margin from 2rem to 1rem */
+            margin-top: 1rem;
+            width: 100%;
+            max-width: 700px;
+            perspective: 1000px;
+            opacity: 0;
+            animation: fadeUp 1s var(--ease-out) 0.6s forwards;
+            /* Ensure it doesn't cause overflow on mobile before hidden */
+            display: flex;
+            justify-content: center;
+        }
+
+        .terminal {
+            width: 100%;
+            background: #0d0d0d;
+            border-radius: 12px;
+            padding: 24px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #a0a0a0;
+            box-shadow: 0 30px 60px -12px rgba(0,0,0,0.25);
+            transform: rotateX(10deg);
+            transition: transform 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #333;
+            text-align: left;
+        }
+
+        .terminal:hover {
+            transform: rotateX(0deg) scale(1.01);
+        }
+
+        .terminal-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 16px;
+        }
+
+        .dot { width: 11px; height: 11px; border-radius: 50%; }
+        .red { background: #FF5F56; }
+        .yellow { background: #FFBD2E; }
+        .green { background: #27C93F; }
+
+        .code-line {
+            min-height: 1.6em;
+            margin-bottom: 6px;
+            display: flex;
+            line-height: 1.4;
+        }
+        .prompt { color: #27C93F; margin-right: 12px; user-select: none; }
+        .cursor { display: inline-block; width: 8px; height: 1.1em; background: #a0a0a0; animation: blink 1s infinite; margin-left: 2px; vertical-align: middle;}
+        .highlight { color: #fff; }
+
+        /* --- Features Grid --- */
+        .features {
+            padding: var(--spacing-section) 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--surface);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            transition: all 0.4s var(--ease-out);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .card:hover {
+            background: var(--surface-hover);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+            border-color: rgba(0,0,0,0.12);
+            z-index: 2;
+        }
+
+        .card-inner {
+            transform: translateZ(20px);
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            letter-spacing: -0.01em;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* --- Waitlist / Form --- */
+        .waitlist-section {
+            padding: 2rem 0 var(--spacing-header);
+            text-align: center;
+        }
+
+        .waitlist-content {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .waitlist-content h2 {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.03em;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            width: 100%;
+            margin-top: 2.5rem;
+        }
+
+        input[type="email"] {
+            width: 100%;
+            padding: 1.1rem 1.5rem;
+            padding-right: 150px; /* Space for button */
+            border-radius: 99px;
+            border: 1px solid var(--border);
+            background: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.02);
+            font-family: var(--font-main);
+            color: var(--text-main);
+        }
+
+        input[type="email"]::placeholder {
+            color: #999;
+        }
+
+        input[type="email"]:focus {
+            border-color: #000;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+        }
+
+        .submit-btn {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            bottom: 5px;
+            padding: 0 24px;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 99px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: var(--font-main);
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+            z-index: 2;
+        }
+
+        .submit-btn:hover {
+            transform: scale(0.97);
+            background: #222;
+        }
+
+        /* --- Footer --- */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2rem 0;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes blink { 
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; } 
+        }
+
+        /* --- Mobile / Responsive Tweaks --- */
+        @media(max-width: 768px) {
+            
+            nav {
+                height: 60px;
+                padding: 0 1rem; /* Tighter padding for mobile nav */
+            }
+
+            header {
+                /* Remove fixed height to allow flexible scaling */
+                min-height: auto;
+                padding-top: 120px;
+                /* UPDATED: Reduced bottom padding from 4rem to 2.5rem */
+                padding-bottom: 2.5rem;
+            }
+
+            .terminal-wrapper {
+                /* Hide terminal on mobile to save space */
+                display: none; 
+            }
+
+            .grid {
+                grid-template-columns: 1fr; /* Stack cards */
+                gap: 1rem;
+            }
+
+            .card {
+                padding: 2rem;
+            }
+
+            /* Stack input and button on mobile */
+            .input-wrapper {
+                flex-direction: column;
+                gap: 12px;
+                max-width: 100%;
+            }
+
+            input[type="email"] {
+                padding: 1rem 1.25rem;
+                padding-right: 1.25rem; /* Remove button space padding */
+                width: 100%;
+                text-align: center;
+            }
+
+            .submit-btn {
+                position: static; /* Remove absolute positioning */
+                width: 100%;
+                padding: 16px;
+                margin-top: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Dynamic Background -->
+    <canvas id="canvas-bg"></canvas>
+
+    <nav>
+        <div class="container nav-inner">
+            <a href="#" class="logo">
+                <img src="smolify.gif" alt="Logo">
+                smolify
+            </a>
+            <a href="#access" class="nav-btn">Request Access</a>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container header-content">
+            <div class="status-pill">
+                <span style="width:6px; height:6px; background:#27C93F; border-radius:50%;"></span>
+                Accepting Partners for 2026
+            </div>
+            
+            <h1>The God Model Era<br>is Over.</h1>
+            
+            <p class="hero-sub">
+                We are in a compute bubble. Stop using sledgehammers to crack nuts. 
+                Build ultra-fast, domain-specific models that you actually own.
+            </p>
+            
+            <div class="terminal-wrapper">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+                    </div>
+                    <div id="code-output">
+                        <!-- JS writes here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="features">
+        <div class="container">
+            <div class="grid">
+                <div class="card" data-tilt>
+                    <div class="card-inner">
+                        <div class="icon-box">🫧</div>
+                        <h3>The Compute Bubble</h3>
+                        <p>The assumption that you need a massive data center for inference is vanishing. By 2026, high-end laptops will run 90% of business use cases.</p>
+                    </div>
+                </div>
+                <div class="card" data-tilt>
+                    <div class="card-inner">
+                        <div class="icon-box">🧠</div>
+                        <h3>Rise of the DSLM</h3>
+                        <p>Generalist models are masters of none. We distill open models (like Qwen) into ruthlessly efficient, vertical-specific (legal, bio-med) experts.</p>
+                    </div>
+                </div>
+                <div class="card" data-tilt>
+                    <div class="card-inner">
+                        <div class="icon-box">🗝️</div>
+                        <h3>True Ownership</h3>
+                        <p>US labs hide weights. We embrace the open spirit. Download your < 1B parameter model and run it locally. Zero latency. Zero per-token costs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="access" class="waitlist-section">
+        <div class="container waitlist-content">
+            <h2>Join the Foundry</h2>
+            <p style="color: var(--text-muted);">Turn your datasets into deployed intelligence.</p>
+            
+            <form id="waitlist-form">
+                <div class="input-wrapper">
+                    <input type="email" placeholder="enterprise@company.com" required>
+                    <button type="submit" class="submit-btn"><span>Start Distilling</span></button>
+                </div>
+            </form>
+            <p id="success-msg" style="margin-top: 1.5rem; color: #27C93F; font-size: 0.9rem; font-weight: 500; opacity: 0; transition: opacity 0.5s;">
+                Request received. We will contact your technical lead shortly.
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Smolify. Intelligence, Distilled.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. Terminal Typing Animation ---
+        const terminalOutput = document.getElementById('code-output');
+        const sequence = [
+          { text: "$ smolify init --dataset medical_soap_notes", delay: 800 },
+          { text: "🔍 Analyzing user intent... [Success]", delay: 600 },
+          { text: "📡 Establishing link to Teacher Model (717 GB)...", delay: 1200 },
+          { text: "🧪 Synthesizing high-fidelity training data...", delay: 2000 },
+          { text: "🧠 Distilling knowledge to Student Architecture...", delay: 2500 },
+          { text: "✅ Training Complete. Final Model Size: 864 MB.", delay: 1500 },
+          { text: "🚀 Deploying to Edge Inference Engine...", delay: 1000 }
+        ];
+
+        let lineIndex = 0;
+
+        function typeLine(lineData) {
+            if (lineIndex >= sequence.length) return; 
+
+            const line = document.createElement('div');
+            line.className = 'code-line';
+            line.innerHTML = `<span class="prompt">➜</span> <span class="text"></span>`;
+            terminalOutput.appendChild(line);
+            
+            // Handle scrolling if terminal gets full
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+
+            const prevLines = terminalOutput.querySelectorAll('.cursor');
+            prevLines.forEach(c => c.remove());
+
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor';
+            line.appendChild(cursor);
+
+            const textSpan = line.querySelector('.text');
+            const fullText = lineData.text;
+            let charIndex = 0;
+
+            function typeChar() {
+                if (charIndex < fullText.length) {
+                    textSpan.textContent += fullText.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeChar, 25); 
+                } else {
+                    if (fullText.includes("Success") || fullText.includes("Complete")) {
+                        textSpan.classList.add('highlight');
+                    }
+                    lineIndex++;
+                    if (lineIndex < sequence.length) {
+                        setTimeout(() => typeLine(sequence[lineIndex]), sequence[lineIndex-1].delay);
+                    }
+                }
+            }
+            typeChar();
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting && lineIndex === 0) {
+                    typeLine(sequence[0]);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        // Only observe if terminal is visible (desktop)
+        if(window.innerWidth > 768) {
+            const term = document.querySelector('.terminal');
+            if(term) observer.observe(term);
+        }
+
+        // --- 2. 3D Tilt Effect for Cards ---
+        const cards = document.querySelectorAll('.card');
+
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                // Disable tilt on mobile for performance
+                if(window.innerWidth < 768) return;
+
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const xPct = (x / rect.width - 0.5) * 2;
+                const yPct = (y / rect.height - 0.5) * 2;
+
+                card.style.transform = `perspective(1000px) rotateX(${yPct * -4}deg) rotateY(${xPct * 4}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            });
+        });
+
+        // --- 3. Fluid Background Animation ---
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+        
+        // Responsive particle count
+        const particleCount = window.innerWidth < 768 ? 30 : 60;
+        const connectionDistance = 150;
+        const mouseDistance = 200;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(0,0,0,0.4)";
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        let mouse = { x: null, y: null };
+        window.addEventListener('mousemove', e => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+
+                for (let j = index; j < particles.length; j++) {
+                    const dx = particles[j].x - p.x;
+                    const dy = particles[j].y - p.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < connectionDistance) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0,0,0,${0.1 - dist/connectionDistance * 0.1})`;
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+
+                if (mouse.x) {
+                    const dx = mouse.x - p.x;
+                    const dy = mouse.y - p.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < mouseDistance) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0,0,0,${0.15 - dist/mouseDistance * 0.15})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        ctx.stroke();
+                        p.x -= dx * 0.005;
+                        p.y -= dy * 0.005;
+                    }
+                }
+            });
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // --- 4. Form Handling ---
+        document.getElementById('waitlist-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = document.querySelector('.submit-btn');
+            btn.innerHTML = '<span>Request Sent</span>';
+            btn.style.backgroundColor = '#27C93F';
+            document.getElementById('success-msg').style.opacity = '1';
+        });
+
+    </script>
+</body>
+</html>
