@@ -29,7 +29,7 @@ Smolify is a "Model Foundry" that automates the creation of high-performance, pr
 
 #### 3.1 The Workflow
 1.  **Intent Capture:** You describe your business need (e.g., "Convert raw doctor dictations into structured SOAP notes").
-2.  **Proprietary Data Synthesis (The "Black Box"):**
+2.  **Proprietary Data Synthesis:**
     *   Our engine leverages a proprietary "Teacher-Student" distillation topology. We use SOTA reasoning engines to hallucinate high-fidelity, perfect scenarios specific to your domain.
     *   You validate a small sample; we scale the synthetic corpus autonomously.
 3.  **Neural Distillation:** We fine-tune a highly optimized, lightweight architecture. This model is small enough to fit in the CPU cache of a laptop or the neural engine of a phone, yet performs the specific task with the accuracy of a massive model.
