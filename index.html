@@ -62,6 +62,17 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Nav Smooth Fade Effect */
+        .nav-fade {
+            background: rgba(3, 7, 18, 0.85); /* Semi-transparent dark bg */
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            /* This creates the smooth fade out at the bottom instead of a hard line */
+            mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+            padding-bottom: 20px; /* Extra padding to allow space for the fade */
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -70,9 +81,8 @@
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
 
-    <!-- Navigation (Frosted & Fixed) -->
-    <!-- Added: backdrop-blur-lg, bg-[#030712]/80, border-b to fix overlap issue -->
-    <nav class="fixed w-full z-50 top-0 transition-all duration-300 backdrop-blur-lg bg-[#030712]/80 border-b border-white/5" id="navbar">
+    <!-- Navigation (Smooth Fade) -->
+    <nav class="fixed w-full z-50 top-0 nav-fade transition-all duration-300" id="navbar">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-2">
                 <img src="https://smolify.ai/smolify.gif" class="w-10 h-10 rounded-full border border-emerald-500/30">
@@ -84,8 +94,8 @@
                 <a href="#foundry" class="hover:text-emerald-400 transition">The Foundry</a>
                 <a href="#comparison" class="hover:text-emerald-400 transition">Economics</a>
                 <!-- BUY CREDITS LINK -->
-                <a href="https://app.smolify.ai/buy-credits" class="text-emerald-400 hover:text-emerald-300 transition flex items-center gap-1">
-                    <i data-lucide="credit-card" class="w-4 h-4"></i> Buy Credits
+                <a href="https://app.smolify.ai/buy-credits" class="text-emerald-400 hover:text-emerald-300 transition flex items-center gap-1 group">
+                    <i data-lucide="credit-card" class="w-4 h-4 group-hover:scale-110 transition-transform"></i> Buy Credits
                 </a>
             </div>
 
