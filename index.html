@@ -130,7 +130,7 @@
     <nav class="fixed w-full z-50 top-0 bg-gradient-to-b from-[#030712] via-[#030712]/90 to-transparent backdrop-blur-sm transition-all duration-300 pb-8" id="navbar">
         <div class="max-w-7xl mx-auto px-6 pt-4 flex justify-between items-center">
             
-            <!-- Logo Section (Circle Removed) -->
+            <!-- Logo Section -->
             <div class="flex items-center gap-3">
                 <img src="https://smolify.ai/smolify.gif" class="w-8 h-8 rounded-full opacity-90" alt="Smolify AI Logo">
                 <span class="font-bold text-lg tracking-tight">Smolify</span>
@@ -248,21 +248,33 @@
         <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
             <div class="flex-1">
                 <h2 class="text-4xl font-bold mb-6">Behemoth vs. Blade</h2>
-                <p class="text-gray-400 mb-6 font-light">
+                <p class="text-gray-400 mb-8 font-light">
                     We pitted a Smolify "Clinical Scribe" model against GPT-4 class APIs.
                 </p>
-                <ul class="space-y-4">
+                <ul class="space-y-6">
                     <li class="flex items-center gap-4">
-                        <i data-lucide="zap" class="text-emerald-400"></i>
-                        <span><b>100x Faster</b> Inference Time</span>
+                        <div class="bg-emerald-500/10 p-2 rounded-lg text-emerald-400">
+                            <i data-lucide="smartphone"></i>
+                        </div>
+                        <span class="text-lg">Run locally on Phone at <b class="text-white">~50 tokens/s</b></span>
                     </li>
                     <li class="flex items-center gap-4">
-                        <i data-lucide="dollar-sign" class="text-emerald-400"></i>
-                        <span><b>Zero</b> Marginal Cost per Token</span>
+                        <div class="bg-emerald-500/10 p-2 rounded-lg text-emerald-400">
+                            <i data-lucide="cpu"></i>
+                        </div>
+                        <span class="text-lg">Only <b class="text-white">500MB RAM</b> required (No GPU needed)</span>
                     </li>
                     <li class="flex items-center gap-4">
-                        <i data-lucide="lock" class="text-emerald-400"></i>
-                        <span>Runs <b>Offline</b> on Local Hardware</span>
+                        <div class="bg-emerald-500/10 p-2 rounded-lg text-emerald-400">
+                            <i data-lucide="dollar-sign"></i>
+                        </div>
+                        <span class="text-lg"><b class="text-white">Zero</b> Marginal Cost per Token</span>
+                    </li>
+                    <li class="flex items-center gap-4">
+                        <div class="bg-emerald-500/10 p-2 rounded-lg text-emerald-400">
+                            <i data-lucide="lock"></i>
+                        </div>
+                        <span class="text-lg">Runs <b class="text-white">100% Offline</b> & Private</span>
                     </li>
                 </ul>
             </div>
