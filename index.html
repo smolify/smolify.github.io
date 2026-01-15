@@ -102,22 +102,35 @@
             100% { transform: perspective(500px) rotateX(60deg) translateY(60px); }
         }
 
-        /* Geometric Ring */
+        /* Geometric Ring (Now Jelly Blob) */
         .geo-ring {
             position: absolute;
             top: 50%;
             left: 50%;
             width: 600px;
             height: 600px;
-            border: 1px dashed rgba(16, 185, 129, 0.1);
-            border-radius: 50%;
+            /* Organic border radius */
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            /* Subtle fill and border to define the blob */
+            background: rgba(16, 185, 129, 0.02);
+            border: 1px solid rgba(16, 185, 129, 0.15);
             transform: translate(-50%, -50%);
-            animation: spin 30s linear infinite;
+            animation: blobMorph 15s ease-in-out infinite;
         }
 
-        @keyframes spin {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        @keyframes blobMorph {
+            0% { 
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+                transform: translate(-50%, -50%) rotate(0deg); 
+            }
+            50% { 
+                border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+                transform: translate(-50%, -50%) rotate(180deg); 
+            }
+            100% { 
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+                transform: translate(-50%, -50%) rotate(360deg); 
+            }
         }
 
         /* Floating Orbs */
