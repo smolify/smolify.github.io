@@ -23,5 +23,6 @@ Smolify is a foundry for **Domain Specific Language Models (DSLMs)**. We allow d
 ### Documentation Map
 
 *   [**Get Started**](/docs/get-started): Launch your first distillation job in 5 minutes.
+*   [**vLLM Deployment**](/docs/vllm): Get higher throughput and an API server.
 *   [**Core Concepts**](/docs/concepts): Understand Synthesis, Distillation, and DSLMs.
 *   [**Model Architecture**](/docs/models): Technical specs of the Gemma 3-based output models.
