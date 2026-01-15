@@ -6,78 +6,94 @@ Smolify is a platform designed to "distill" massive reasoning engines into ultra
 
 The application sidebar handles all authentication.
 
-1.  **If you have an API Key:** Enter it in the sidebar password field and click **Authenticate**.
+1.  **If you have an API Key:** Enter it in the sidebar field and click **Authenticate**.
 2.  **If you are new:**
-    *   Expand the **"No Key? Get one for free!"** section in the sidebar.
+    *   Expand the **"No Key? Get one for free!"** section.
     *   Enter your email and click **Register**.
-    *   Check your email (and spam folder) for your key.
+    *   Check your inbox (and spam) for your `sk-smolify-...` key.
 
 *Once authenticated, you will see your current Credit Balance and Job History in the sidebar.*
 
-## Step 2: Define Your Model Mission
+## Step 2: Define Your Mission
 
 You can define your model's behavior using one of three methods:
 
-### Option A: Use a Trending Template (Fastest)
-Click one of the **Trending Templates** pills at the top of the dashboard (e.g., "🏥 Clinical Scribe").
-*   **Action:** This automatically pre-fills the Project Name, System Persona, and Description with battle-tested logic.
+### Option A: Trending Templates (Fastest)
+Click a **Trending Template** pill at the top of the dashboard (e.g., "🏥 Clinical Scribe").
+*   **Action:** Automatically pre-fills the Project Name, System Persona, and Description with battle-tested prompts known to produce high-quality synthetic data.
 
 ### Option B: Define from Scratch (Recommended)
-Navigate to the **"✍️ Define Mission"** tab and fill in the following:
-*   **Project Name (Required):** A unique name for your model (e.g., `Pirate-Email-Converter`).
+Navigate to the **"✍️ Define Mission"** tab:
+*   **Project Name:** A unique handle (e.g., `Pirate-Email-Converter`).
 *   **System Persona:** The "identity" of the AI (e.g., *"You are a salty pirate captain"*).
-*   **Description:** A clear explanation of the task, inputs, and desired outputs (e.g., *"Convert professional emails into pirate speak"*).
+*   **Description:** A clear explanation of the task, inputs, and desired outputs.
 
-### Option C: Upload Existing Data (Beta)
-If you already have samples, navigate to the **"📄 Upload Training Data"** tab.
-*   **Supported Formats:** CSV or JSON.
-*   **Structure:** Your file should ideally have columns named `system`, `user`, and `assistant`.
+### Option C: Upload Data (Beta)
+Navigate to the **"📄 Upload Training Data"** tab.
+*   **Format:** CSV or JSON.
+*   **Schema:** Columns must map to `system`, `user`, and `assistant`.
 
-## Step 3: Synthesize and Edit Data
+## Step 3: Synthesize & Review
 
-1.  Click the **✨ Synthesize Preview** button (or verify your uploaded data).
-2.  The app will generate a preview table under **"🔎 Review Synthetic Data"**.
-3.  **Edit Interactively:** This is a live data editor. You can click into any cell (User Input or Target Output) to fix errors or tweak the logic before training begins.
+1.  Click **✨ Synthesize Preview**.
+2.  The app will generate a sample table under **"🔎 Review Synthetic Data"**.
+3.  **Live Editing:** This is an interactive table. Click any cell to correct logic errors before the full distillation process begins.
 
-## Step 4: Choose Your Pipeline Power
+## Step 4: Select Pipeline Power
 
-This is where you decide how the synthesis and training are processed.
+Smolify offers two distinct synthesis engines. Choose the one that fits your needs:
 
-### 🏆 Option A: Managed Pipeline (Recommended)
-**Cost:** 1 Credit (~$10) | **Status:** *Optimized*
+### 🏆 Option A: Managed Pipeline (1 Credit)
+**Best for: Production-grade models, complex reasoning tasks.**
 
-This is the standard, high-performance path. By using Smolify Credits, you get:
-*   **Zero Configuration:** No need to manage external API keys or cloud consoles.
-*   **Guaranteed Throughput:** We handle all rate limits and API negotiation with the teacher models.
-*   **Production Quality:** Uses our optimized, high-tier inference endpoints for better synthetic data quality.
+The Managed Pipeline utilizes a **Consensus Engine**. We aggregate outputs from various SOTA (State-of-the-Art) reasoning models (including OpenAI GPT-5, Anthropic Claude 4.5, and Google Gemini 3) to ensure the highest fidelity synthetic data.
+*   **Zero Config:** We handle quotas and model routing.
+*   **Higher Quality:** Multi-model verification reduces hallucinations in the training data.
 
-*To use this, simply click **Initialize Foundry Pipeline**. If you are low on credits, click the "Purchase Credits" link in the app.*
+### 🛠️ Option B: BYOK / Free Mode
+**Best for: Prototyping, hobbyists, low-cost experiments.**
 
-### 🛠️ Option B: Self-Managed / BYOK
-**Cost:** Free | **Status:** *Manual Configuration*
-
-If you prefer to manage your own infrastructure, you can bring your own keys. Note that you are responsible for your own API rate limits and quotas.
+If you have your own credentials, you can run the foundry for free.
 1.  Expand **"⚙️ Advanced Options"**.
-2.  Enter your **Gemini API Key** in the designated field.
-3.  *Note: Synthesis speed will depend on the tier of the key you provide.*
+2.  Enter your **Google Gemini API Key**.
+3.  **Engine:** This pipeline strictly uses **Gemini 2.5 Flash**. While fast and efficient, it lacks the multi-model consensus of the managed tier.
+4.  *Note: You are responsible for your own API rate limits.*
 
-## Step 5: Advanced Hosting (Optional)
+## Step 5: Hosting & Launch
 
-By default, models are hosted on the public `smolify` Hugging Face organization. To push to your own private repository:
+By default, models are hosted on the public `smolify` Hugging Face organization. To push to your own account:
 1.  Expand **"⚙️ Advanced Options"**.
 2.  Enter your **HF Write Token** and **Username/Org**.
 
-## Step 6: Initialize Distillation
+Click **Initialize Foundry Pipeline**. The system will now:
+1.  Generate ~10,000 synthetic examples.
+2.  Spin up an L4 GPU node.
+3.  Fine-tune a **Gemma 3 (270M)** model on your data.
 
-1.  Check the **Cost Card** to ensure you are using the desired method (Credits vs. Free Mode).
-2.  Click **Initialize Foundry Pipeline**.
-3.  **Monitor Status:** The app will display a "Foundry Status" log. You can watch as the system synthesizes the full corpus and trains the model.
+## Step 6: Inference
 
-## Step 7: Inference & Usage
+When the status changes to **Distillation Complete**, click the **📦 Open Model** link.
 
-Once the status changes to **Distillation Complete**, two links will appear:
-*   **📦 Open Model:** Links to the Hugging Face Model card.
-*   **📄 Open Dataset:** Links to the synthetic dataset used for training.
+Your model is optimized for edge deployment. You can run it using `transformers`:
 
-### How to run your model
-Navigate to the **Open Model** link. Copy the Python snippet provided in the Model Card and run it in a GPU environment (like Google Colab) or in your local CPU (use vLLM).
+```python
+from transformers import AutoProcessor, AutoModelForCausalLM
+
+# Your specific model ID will be in the results link
+model_id = "your-username/smolified-project-name" 
+
+processor = AutoProcessor.from_pretrained(model_id, device_map="auto")
+model = AutoModelForCausalLM.from_pretrained(model_id, dtype="auto", device_map="auto") # Runs on CPU!
+
+message = [
+    {"role": "system", "content": "Your System Prompt"},
+    {"role": "user", "content": "Your Input"}
+]
+
+inputs = processor.apply_chat_template(message, add_generation_prompt=True, return_dict=True, return_tensors="pt")
+
+out = model.generate(**inputs.to(model.device), pad_token_id=processor.eos_token_id, max_new_tokens=128)
+output = processor.decode(out[0][len(inputs["input_ids"][0]):], skip_special_tokens=True)
+
+print(output)
+```
