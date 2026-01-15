@@ -18,3 +18,7 @@ All Foundry jobs currently distill into this specific architecture.
 
 ### Why 270M?
 The 270M parameter class is the "Goldilocks" zone for **Single-Task Intelligence**. While it cannot write a symphony or code a website from scratch, it can be fine-tuned to perform specific tasks (classification, entity extraction, reformatting, IoT control) with 99% accuracy comparable to GPT-4, but at 1/1000th the cost.
+
+---
+
+[**< Back to Documentation**](/docs/index)

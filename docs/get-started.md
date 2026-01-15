@@ -97,3 +97,7 @@ output = processor.decode(out[0][len(inputs["input_ids"][0]):], skip_special_tok
 
 print(output)
 ```
+
+---
+
+[**< Back to Documentation**](/docs/index)

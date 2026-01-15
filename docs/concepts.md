@@ -18,3 +18,7 @@ A Sovereign Model is an AI asset that you fully own.
 We specialize in **Micro-LLMs**.
 *   **Traditional LLMs:** 7B to 70B parameters. Requires 16GB+ VRAM (expensive GPUs).
 *   **Smolify Models:** ~270M parameters. Requires <1GB RAM. Runs on Raspberry Pi, mobile phones, and web browsers.
+
+---
+
+[**< Back to Documentation**](/docs/index)
