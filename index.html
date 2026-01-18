@@ -236,7 +236,7 @@
         }
     </style>
 </head>
-<body class="antialiased selection:bg-[#D97706] selection:text-white">
+<body class="antialiased selection:bg-[#D97706] selection:text-white pb-32">
 
     <!-- Kinetic Background -->
     <div class="kinetic-bg">
@@ -247,7 +247,6 @@
     </div>
 
     <!-- Navigation -->
-    <!-- Changed bg from dark gradient to light parchment blur -->
     <nav class="fixed z-50 top-5 left-1/2 transform -translate-x-1/2 
                 w-[92%]
                 bg-[#FDFBF7]/60 backdrop-blur-xl 
@@ -263,7 +262,7 @@
                 <span class="font-bold text-lg tracking-tight text-[#064E3B]">Smolify</span>
             </div>
             
-            <!-- Links - Updated Colors to dark with Saffron hover -->
+            <!-- Links -->
             <div class="hidden md:flex gap-8 text-sm font-medium text-[#4B5563] items-center">
                 <a href="#manifesto" class="hover:text-[#D97706] transition-colors">Manifesto</a>
                 <a href="#foundry" class="hover:text-[#D97706] transition-colors">The Foundry</a>
@@ -274,7 +273,7 @@
                 </a>
             </div>
 
-            <!-- CTA Button - Updated to Green Outline/Solid interaction -->
+            <!-- CTA Button -->
             <a href="https://app.smolify.ai" class="magnetic bg-white hover:bg-[#064E3B] text-[#064E3B] hover:text-white px-5 py-2 rounded-full border border-[#064E3B]/20 transition-colors duration-300 shadow-sm hover:shadow-lg text-xs font-bold uppercase tracking-wide">
                 Launch App
             </a>
@@ -282,7 +281,6 @@
     </nav>
 
     <!-- Hero Section -->
-    <!-- Added more padding top (pt-32) to account for the floating nav overlapping content -->
     <section class="min-h-screen flex items-center justify-center pt-32 pb-10 relative">
         <div class="text-center max-w-4xl px-6">
             <!-- Badge -->
@@ -419,24 +417,56 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-20 border-t border-[#064E3B]/10 bg-[#FDFBF7]">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <img src="https://smolify.ai/smolify.gif" class="w-16 h-16 mx-auto mb-6 opacity-90 mix-blend-multiply" alt="Smolify AI Footer Logo">
-            <h2 class="text-2xl font-bold mb-2 text-[#111827]">Smolify</h2>
-            <p class="text-[#4B5563] mb-8 font-light">Building the infrastructure for the post-API world.</p>
+    <!-- FLOATING FOOTER REDESIGN -->
+    <footer class="mt-20 mb-5">
+        <div class="w-[92%] mx-auto bg-[#FDFBF7]/60 backdrop-blur-xl border border-[#064E3B]/10 rounded-3xl shadow-[0_8px_32px_-4px_rgba(6,78,59,0.08)] px-6 py-6 md:py-5">
             
-            <div class="flex justify-center gap-6 mb-12">
-                <a href="https://x.com/smolifyai" class="text-[#9CA3AF] hover:text-[#064E3B] transition" aria-label="Twitter"><i data-lucide="twitter"></i></a>
-                <a href="https://www.linkedin.com/company/smolify" class="text-[#9CA3AF] hover:text-[#064E3B] transition" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
-                <a href="mailto:info@smolify.ai" class="text-[#9CA3AF] hover:text-[#064E3B] transition" aria-label="Email"><i data-lucide="mail"></i></a>
+            <!-- Top Row: Identity, Socials, Hiring -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-4 md:mb-2 pb-4 md:pb-2 border-b border-[#064E3B]/5">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <img src="https://smolify.ai/smolify.gif" class="w-6 h-6 mix-blend-multiply opacity-90" alt="Logo">
+                        <span class="font-bold text-[#111827]">Smolify</span>
+                    </div>
+                    <span class="hidden md:inline text-gray-300">|</span>
+                    <p class="text-xs text-[#4B5563] font-light hidden md:block">Building the infrastructure for the post-API world.</p>
+                </div>
+
+                <div class="flex items-center gap-6">
+                     <!-- Hiring Pulse Badge -->
+                    <a href="/careers" class="group flex items-center gap-2 px-3 py-1 rounded-full bg-[#D97706]/10 border border-[#D97706]/20 text-[#D97706] text-[10px] font-bold uppercase tracking-wider hover:bg-[#D97706] hover:text-white transition-all">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D97706] opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#D97706] group-hover:bg-white"></span>
+                        </span>
+                        We're Hiring
+                    </a>
+                    
+                    <!-- Socials -->
+                    <div class="flex gap-4">
+                        <a href="https://x.com/smolifyai" class="text-[#9CA3AF] hover:text-[#064E3B] transition" aria-label="Twitter"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+                        <a href="https://www.linkedin.com/company/smolify" class="text-[#9CA3AF] hover:text-[#064E3B] transition" aria-label="LinkedIn"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+                        <a href="mailto:info@smolify.ai" class="text-[#9CA3AF] hover:text-[#064E3B] transition" aria-label="Email"><i data-lucide="mail" class="w-4 h-4"></i></a>
+                    </div>
+                </div>
             </div>
 
-            <div class="text-sm text-[#6B7280]">
-                <p>&copy; 2026 Smolify AI (Smolify Private Limited)</p>
-                <p>All rights reserved, Kolkata-700026</p>
-                <p class="mt-2">Founded by <a href="https://rishirajacharya.com" class="text-[#D97706] hover:text-[#064E3B] transition-colors font-medium">Rishiraj Acharya</a>.</p>
+            <!-- Bottom Row: Copyright, Legal, Founder -->
+            <div class="flex flex-col md:flex-row justify-between items-center text-[10px] text-[#6B7280] gap-3 md:gap-0">
+                <div class="flex flex-wrap justify-center gap-x-4">
+                    <span>&copy; 2026 Smolify Pvt. Ltd.</span>
+                    <span class="hidden md:inline text-gray-300">•</span>
+                    <span>Kolkata-700026</span>
+                    <span class="hidden md:inline text-gray-300">•</span>
+                    <span>Founded by <a href="https://rishirajacharya.com" class="text-[#D97706] hover:text-[#064E3B] transition font-medium">Rishiraj Acharya</a></span>
+                </div>
+                
+                <div class="flex gap-4 font-medium">
+                    <a href="/terms" class="hover:text-[#064E3B] transition">Terms of Service</a>
+                    <a href="/privacy" class="hover:text-[#064E3B] transition">Privacy Policy</a>
+                </div>
             </div>
+
         </div>
     </footer>
 
