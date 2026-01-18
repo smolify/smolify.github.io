@@ -119,13 +119,15 @@
             100% { transform: perspective(500px) rotateX(60deg) translateY(60px); }
         }
 
-        /* Geometric Ring (Now Jelly Blob) */
+        /* Geometric Ring (Now Jelly Blob) - Scaled for Mobile */
         .geo-ring {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 600px;
-            height: 600px;
+            width: 80vw; /* Responsive width */
+            height: 80vw; /* Responsive height */
+            max-width: 600px;
+            max-height: 600px;
             border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
             background: rgba(217, 119, 6, 0.03); /* Saffron tint */
             border: 1px solid rgba(6, 78, 59, 0.08); /* Vedic Green border */
@@ -148,7 +150,7 @@
             }
         }
 
-        /* Floating Orbs */
+        /* Floating Orbs - Scaled for Mobile */
         .orb {
             position: absolute;
             border-radius: 50%;
@@ -157,12 +159,16 @@
             animation: floatOrb 10s infinite ease-in-out;
         }
         .orb-1 { 
-            top: 10%; left: 20%; width: 300px; height: 300px; 
+            top: 10%; left: 20%; 
+            width: 50vw; height: 50vw; 
+            max-width: 300px; max-height: 300px;
             background: #D97706; /* Marigold Saffron */
             animation-delay: 0s; 
         }
         .orb-2 { 
-            bottom: 20%; right: 10%; width: 400px; height: 400px; 
+            bottom: 20%; right: 10%; 
+            width: 60vw; height: 60vw;
+            max-width: 400px; max-height: 400px;
             background: #064E3B; /* Vedic Emerald */
             animation-delay: -5s; 
         }
@@ -231,6 +237,18 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+        
+        /* Mobile Menu Transitions */
+        #mobile-menu {
+            transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        #mobile-menu.open {
+            max-height: 400px;
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-[#D97706] selection:text-white pb-32">
@@ -245,13 +263,13 @@
 
     <!-- Navigation -->
     <nav class="fixed z-50 top-5 left-1/2 transform -translate-x-1/2 
-                w-[92%]
+                w-[95%] md:w-[92%]
                 bg-[#FDFBF7]/60 backdrop-blur-xl 
                 border border-[#064E3B]/10 rounded-3xl 
                 shadow-[0_8px_32px_-4px_rgba(6,78,59,0.08)]
                 transition-all duration-300" 
          id="navbar">
-        <div class="px-6 py-3 flex justify-between items-center">
+        <div class="px-5 md:px-6 py-3 flex justify-between items-center relative">
             
             <!-- Logo Section -->
             <div class="flex items-center gap-3">
@@ -259,7 +277,7 @@
                 <span class="font-bold text-lg tracking-tight text-[#064E3B]">Smolify</span>
             </div>
             
-            <!-- Links -->
+            <!-- Desktop Links -->
             <div class="hidden md:flex gap-8 text-sm font-medium text-[#4B5563] items-center">
                 <a href="#manifesto" class="hover:text-[#D97706] transition-colors">Manifesto</a>
                 <a href="#foundry" class="hover:text-[#D97706] transition-colors">The Foundry</a>
@@ -270,49 +288,72 @@
                 </a>
             </div>
 
-            <!-- CTA Button -->
-            <a href="https://app.smolify.ai" class="magnetic bg-white hover:bg-[#064E3B] text-[#064E3B] hover:text-white px-5 py-2 rounded-full border border-[#064E3B]/20 transition-colors duration-300 shadow-sm hover:shadow-lg text-xs font-bold uppercase tracking-wide">
-                Launch App
-            </a>
+            <!-- Desktop CTA & Mobile Toggle -->
+            <div class="flex items-center gap-3">
+                <!-- CTA Button -->
+                <a href="https://app.smolify.ai" class="magnetic hidden md:inline-flex bg-white hover:bg-[#064E3B] text-[#064E3B] hover:text-white px-5 py-2 rounded-full border border-[#064E3B]/20 transition-colors duration-300 shadow-sm hover:shadow-lg text-xs font-bold uppercase tracking-wide">
+                    Launch App
+                </a>
+                
+                <!-- Mobile Hamburger -->
+                <button id="menu-btn" class="md:hidden text-[#064E3B] p-2 focus:outline-none">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="md:hidden border-t border-[#064E3B]/5 bg-[#FDFBF7]/90 backdrop-blur-xl">
+            <div class="flex flex-col p-6 gap-4 text-center">
+                <a href="#manifesto" class="text-[#4B5563] hover:text-[#D97706] font-medium py-2 mobile-link">Manifesto</a>
+                <a href="#foundry" class="text-[#4B5563] hover:text-[#D97706] font-medium py-2 mobile-link">The Foundry</a>
+                <a href="#comparison" class="text-[#4B5563] hover:text-[#D97706] font-medium py-2 mobile-link">Economics</a>
+                <a href="https://smolify.ai/docs" class="text-[#4B5563] hover:text-[#D97706] font-medium py-2 mobile-link">Docs</a>
+                <a href="https://rzp.io/rzp/smolify" class="text-[#064E3B] font-bold py-2 flex items-center justify-center gap-2">
+                    <i data-lucide="credit-card" class="w-4 h-4"></i> Buy Credits
+                </a>
+                <a href="https://app.smolify.ai" class="bg-[#064E3B] text-white px-5 py-3 rounded-xl font-bold uppercase tracking-wide text-xs shadow-lg mt-2">
+                    Launch App
+                </a>
+            </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <!-- CHANGED: pt-32 to pt-24 to shift content up slightly -->
-    <section class="min-h-screen flex items-center justify-center pt-24 pb-10 relative">
-        <div class="text-center max-w-7xl px-6 w-full">
+    <section class="min-h-screen flex items-center justify-center pt-28 md:pt-24 pb-10 relative">
+        <div class="text-center max-w-7xl px-4 md:px-6 w-full">
             <!-- Badge -->
-            <div class="inline-block px-4 py-1.5 rounded-full border border-[#064E3B]/20 bg-[#064E3B]/5 text-[#064E3B] text-xs font-bold mb-6 animate-pulse tracking-wider">
+            <div class="inline-block px-4 py-1.5 rounded-full border border-[#064E3B]/20 bg-[#064E3B]/5 text-[#064E3B] text-[10px] md:text-xs font-bold mb-6 animate-pulse tracking-wider">
                 THE POST-API ERA IS HERE
             </div>
-            <!-- Title -->
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-tight text-[#111827]">
+            <!-- Title - Scaled for Mobile -->
+            <h1 class="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-6 md:mb-8 leading-[1.1] md:leading-tight text-[#111827]">
                 Intelligence, <br>
                 <span class="text-gradient">Distilled.</span>
             </h1>
             <!-- Description -->
-            <!-- CHANGED: Reduced mb-10 to mb-8 to tighten space -->
-            <p class="text-xl text-[#4B5563] mb-8 max-w-2xl mx-auto leading-relaxed font-light">
+            <p class="text-base md:text-xl text-[#4B5563] mb-8 md:mb-8 max-w-2xl mx-auto leading-relaxed font-light px-2">
                 The era of renting "God Models" is over. Smolify distills massive reasoning engines into ultra-efficient, proprietary models that you <b>own</b>.
             </p>
-            <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
-                <!-- Primary Button -->
-                <a href="https://app.smolify.ai" class="magnetic group relative px-8 py-4 bg-[#064E3B] rounded-full font-bold text-[#FDFBF7] overflow-hidden shadow-lg shadow-[#064E3B]/20">
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center w-full sm:w-auto px-4 sm:px-0">
+                <!-- Primary Button - Full width on mobile -->
+                <a href="https://app.smolify.ai" class="magnetic w-full sm:w-auto group relative px-8 py-4 bg-[#064E3B] rounded-full font-bold text-[#FDFBF7] overflow-hidden shadow-lg shadow-[#064E3B]/20 justify-center">
                     <div class="absolute inset-0 w-full h-full bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                    <span class="relative flex items-center gap-2">Enter The Foundry <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
+                    <span class="relative flex items-center justify-center gap-2">Enter The Foundry <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
                 </a>
-                <!-- Secondary Button -->
-                <a href="https://rzp.io/rzp/smolify" class="magnetic px-8 py-4 rounded-full border border-[#111827]/10 hover:bg-[#111827]/5 hover:border-[#111827]/30 transition text-[#111827] font-medium">
+                <!-- Secondary Button - Full width on mobile -->
+                <a href="https://rzp.io/rzp/smolify" class="magnetic w-full sm:w-auto px-8 py-4 rounded-full border border-[#111827]/10 hover:bg-[#111827]/5 hover:border-[#111827]/30 transition text-[#111827] font-medium justify-center text-center">
                     Get Credits
                 </a>
             </div>
 
-            <!-- NEW: Trusted By Section -->
+            <!-- Trusted By Section -->
             <div class="mt-14 pt-2">
                 <p class="text-[10px] md:text-xs font-bold text-[#4B5563]/60 mb-6 uppercase tracking-[0.2em]">
                     We use kernels trusted by teams at
                 </p>
-                <div class="flex flex-wrap justify-center items-center gap-x-8 gap-y-6 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+                <!-- Logos grid optimized for mobile wrapping -->
+                <div class="flex flex-wrap justify-center items-center gap-x-6 md:gap-x-8 gap-y-6 opacity-60 grayscale hover:grayscale-0 transition-all duration-500 px-4">
                     <img alt="Nvidia" class="h-4 md:h-5 w-auto object-contain" src="https://unsloth.ai/cgi/image/nvidia_logo_jMPeSm-zM3f5ejGIcbkvG.png?width=640&quality=80&format=auto">
                     <img alt="Meta" class="h-4 md:h-5 w-auto object-contain" src="https://unsloth.ai/cgi/image/meta_black_logo_v4cigbnOzx949fXvi_uQx.png?width=3840&quality=80&format=auto">
                     <img alt="NASA" class="h-3 md:h-4 w-auto object-contain" src="https://unsloth.ai/cgi/image/1024px-NASA_Worm_logo_(black).svg_0KEakK9gxp3jmXaD5rY3Q.png?width=2048&quality=80&format=auto">
@@ -330,23 +371,24 @@
     </section>
 
     <!-- The Problem (Curved Section) -->
-    <section id="manifesto" class="py-24 relative reveal">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="glass p-12 md:p-20 text-center relative overflow-hidden">
+    <section id="manifesto" class="py-16 md:py-24 relative reveal">
+        <div class="max-w-7xl mx-auto px-4 md:px-6">
+            <!-- Adjusted padding for mobile -->
+            <div class="glass p-8 md:p-20 text-center relative overflow-hidden">
                 <!-- Top gradient line -->
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#064E3B] via-[#D97706] to-transparent"></div>
                 
-                <h2 class="text-3xl md:text-5xl font-bold mb-8 text-[#111827]">Stop paying rent for intelligence.</h2>
-                <div class="grid md:grid-cols-2 gap-12 text-left mt-16">
-                    <div class="space-y-6">
-                        <h3 class="text-xl font-semibold text-[#D97706]">🚫 The Compute Bubble</h3>
-                        <p class="text-[#4B5563] leading-relaxed font-light">
+                <h2 class="text-2xl md:text-5xl font-bold mb-6 md:mb-8 text-[#111827]">Stop paying rent for intelligence.</h2>
+                <div class="grid md:grid-cols-2 gap-8 md:gap-12 text-left mt-10 md:mt-16">
+                    <div class="space-y-4 md:space-y-6">
+                        <h3 class="text-lg md:text-xl font-semibold text-[#D97706]">🚫 The Compute Bubble</h3>
+                        <p class="text-[#4B5563] text-sm md:text-base leading-relaxed font-light">
                             Current valuations rely on using sledgehammers to crack nuts. Hospitals and Law Firms are burning millions calling GPT-4 for tasks that require pattern matching, not philosophy.
                         </p>
                     </div>
-                    <div class="space-y-6">
-                        <h3 class="text-xl font-semibold text-[#064E3B]">✅ The DSLM Shift</h3>
-                        <p class="text-[#4B5563] leading-relaxed font-light">
+                    <div class="space-y-4 md:space-y-6">
+                        <h3 class="text-lg md:text-xl font-semibold text-[#064E3B]">✅ The DSLM Shift</h3>
+                        <p class="text-[#4B5563] text-sm md:text-base leading-relaxed font-light">
                             The future belongs to Domain Specific Language Models. Small, ruthless, and private. Smolify gives you the tools to build them in minutes, not months.
                         </p>
                     </div>
@@ -356,35 +398,35 @@
     </section>
 
     <!-- The Magic Box (How it works) -->
-    <section id="foundry" class="py-24">
-        <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-4xl font-bold mb-16 text-center reveal text-[#111827]">The Pipeline</h2>
+    <section id="foundry" class="py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4 md:px-6">
+            <h2 class="text-3xl md:text-4xl font-bold mb-10 md:mb-16 text-center reveal text-[#111827]">The Pipeline</h2>
             
-            <div class="grid md:grid-cols-3 gap-8">
+            <div class="grid md:grid-cols-3 gap-6 md:gap-8">
                 <!-- Step 1 -->
-                <div class="glass p-8 reveal">
+                <div class="glass p-6 md:p-8 reveal">
                     <div class="w-12 h-12 bg-[#D97706]/10 rounded-2xl flex items-center justify-center text-[#D97706] mb-6 border border-[#D97706]/20">
                         <i data-lucide="mic" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-[#111827]">1. Intent Capture</h3>
+                    <h3 class="text-lg md:text-xl font-bold mb-3 text-[#111827]">1. Intent Capture</h3>
                     <p class="text-[#4B5563] text-sm font-light">Describe your business capability. "Turn doctor dictations into SOAP notes."</p>
                 </div>
 
                 <!-- Step 2 -->
-                <div class="glass p-8 reveal" style="transition-delay: 100ms">
+                <div class="glass p-6 md:p-8 reveal" style="transition-delay: 100ms">
                     <div class="w-12 h-12 bg-[#111827]/10 rounded-2xl flex items-center justify-center text-[#111827] mb-6 border border-[#111827]/20">
                         <i data-lucide="flask-conical" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-[#111827]">2. Neural Synthesis</h3>
+                    <h3 class="text-lg md:text-xl font-bold mb-3 text-[#111827]">2. Neural Synthesis</h3>
                     <p class="text-[#4B5563] text-sm font-light">Our "Teacher" models hallucinate thousands of high-fidelity, perfect training scenarios specific to your domain.</p>
                 </div>
 
                 <!-- Step 3 -->
-                <div class="glass p-8 reveal" style="transition-delay: 200ms">
+                <div class="glass p-6 md:p-8 reveal" style="transition-delay: 200ms">
                     <div class="w-12 h-12 bg-[#064E3B]/10 rounded-2xl flex items-center justify-center text-[#064E3B] mb-6 border border-[#064E3B]/20">
                         <i data-lucide="cpu" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-[#111827]">3. Distillation</h3>
+                    <h3 class="text-lg md:text-xl font-bold mb-3 text-[#111827]">3. Distillation</h3>
                     <p class="text-[#4B5563] text-sm font-light">We train a lightweight model (270M params) to mimic the Teacher. You download the weights. You own the brain.</p>
                 </div>
             </div>
@@ -392,66 +434,66 @@
     </section>
 
     <!-- Stats / Graph Placeholder -->
-    <section id="comparison" class="py-24 bg-[#E5E7EB]/30 border-y border-[#064E3B]/5 reveal">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+    <section id="comparison" class="py-16 md:py-24 bg-[#E5E7EB]/30 border-y border-[#064E3B]/5 reveal">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 flex flex-col md:flex-row items-center gap-10 md:gap-16">
             <div class="flex-1">
-                <h2 class="text-4xl font-bold mb-6 text-[#111827]">Behemoth vs. Blade</h2>
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 text-[#111827]">Behemoth vs. Blade</h2>
                 <p class="text-[#4B5563] mb-6 font-light">
                     We pitted a Smolify "Clinical Scribe" model against GPT-4 class APIs.
                 </p>
                 <ul class="space-y-4">
-                    <li class="flex items-center gap-4 text-[#111827]">
-                        <i data-lucide="smartphone" class="text-[#D97706]"></i>
+                    <li class="flex items-center gap-4 text-[#111827] text-sm md:text-base">
+                        <i data-lucide="smartphone" class="text-[#D97706] shrink-0"></i>
                         <span>Run locally on Phone at <b>~50 tokens/s</b></span>
                     </li>
-                    <li class="flex items-center gap-4 text-[#111827]">
-                        <i data-lucide="cpu" class="text-[#D97706]"></i>
+                    <li class="flex items-center gap-4 text-[#111827] text-sm md:text-base">
+                        <i data-lucide="cpu" class="text-[#D97706] shrink-0"></i>
                         <span>Only <b>500MB RAM</b> required (No GPU needed)</span>
                     </li>
-                    <li class="flex items-center gap-4 text-[#111827]">
-                        <i data-lucide="dollar-sign" class="text-[#D97706]"></i>
+                    <li class="flex items-center gap-4 text-[#111827] text-sm md:text-base">
+                        <i data-lucide="dollar-sign" class="text-[#D97706] shrink-0"></i>
                         <span><b>Zero</b> Marginal Cost per Token</span>
                     </li>
-                    <li class="flex items-center gap-4 text-[#111827]">
-                        <i data-lucide="lock" class="text-[#D97706]"></i>
+                    <li class="flex items-center gap-4 text-[#111827] text-sm md:text-base">
+                        <i data-lucide="lock" class="text-[#D97706] shrink-0"></i>
                         <span>Runs <b>100% Offline</b> & Private</span>
                     </li>
                 </ul>
             </div>
             <div class="flex-1 w-full">
                 <!-- Abstract visual of graph -->
-                <div class="glass p-8 w-full h-80 relative flex items-end gap-4 bg-white/50">
+                <div class="glass p-6 md:p-8 w-full h-64 md:h-80 relative flex items-end gap-4 bg-white/50">
                     <!-- Generalist Bar -->
                     <div class="w-1/2 bg-gray-300 rounded-t-2xl h-full relative group">
-                        <div class="absolute bottom-4 left-0 w-full text-center text-xs text-gray-600 font-semibold">Generalist API</div>
-                        <div class="absolute top-1/2 left-0 w-full text-center text-gray-500 font-bold opacity-50">High Latency</div>
+                        <div class="absolute bottom-4 left-0 w-full text-center text-[10px] md:text-xs text-gray-600 font-semibold">Generalist API</div>
+                        <div class="absolute top-1/2 left-0 w-full text-center text-gray-500 font-bold opacity-50 text-xs md:text-base">High Latency</div>
                     </div>
                     <!-- Smolify Bar -->
                     <div class="w-1/2 bg-[#064E3B] rounded-t-2xl h-[20%] relative group hover:h-full transition-all duration-1000 shadow-xl shadow-[#064E3B]/20">
-                        <div class="absolute bottom-4 left-0 w-full text-center text-xs text-[#FDFBF7] font-bold">Smolify DSLM</div>
-                        <div class="absolute -top-8 left-0 w-full text-center text-[#064E3B] font-bold">Ultra Fast</div>
+                        <div class="absolute bottom-4 left-0 w-full text-center text-[10px] md:text-xs text-[#FDFBF7] font-bold">Smolify DSLM</div>
+                        <div class="absolute -top-8 left-0 w-full text-center text-[#064E3B] font-bold text-xs md:text-base">Ultra Fast</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FLOATING FOOTER REDESIGN -->
+    <!-- FLOATING FOOTER -->
     <footer class="mt-20 mb-0">
-        <div class="w-[92%] mx-auto bg-[#FDFBF7]/60 backdrop-blur-xl border border-[#064E3B]/10 rounded-3xl shadow-[0_8px_32px_-4px_rgba(6,78,59,0.08)] px-6 py-6 md:py-5">
+        <div class="w-[95%] md:w-[92%] mx-auto bg-[#FDFBF7]/60 backdrop-blur-xl border border-[#064E3B]/10 rounded-3xl shadow-[0_8px_32px_-4px_rgba(6,78,59,0.08)] px-5 md:px-6 py-6 md:py-5">
             
             <!-- Top Row: Identity, Socials, Hiring -->
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-4 md:mb-2 pb-4 md:pb-2 border-b border-[#064E3B]/5">
-                <div class="flex items-center gap-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-4 md:mb-2 pb-4 md:pb-2 border-b border-[#064E3B]/5 text-center md:text-left">
+                <div class="flex flex-col md:flex-row items-center gap-4">
                     <div class="flex items-center gap-2">
                         <img src="https://smolify.ai/smolify.gif" class="w-6 h-6 mix-blend-multiply opacity-90" alt="Logo">
                         <span class="font-bold text-[#111827]">Smolify</span>
                     </div>
                     <span class="hidden md:inline text-gray-300">|</span>
-                    <p class="text-xs text-[#4B5563] font-light hidden md:block">Building the infrastructure for the post-API world.</p>
+                    <p class="text-xs text-[#4B5563] font-light">Building the infrastructure for the post-API world.</p>
                 </div>
 
-                <div class="flex items-center gap-6">
+                <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6">
                      <!-- Hiring Pulse Badge -->
                     <a href="/careers" class="group flex items-center gap-2 px-3 py-1 rounded-full bg-[#D97706]/10 border border-[#D97706]/20 text-[#D97706] text-[10px] font-bold uppercase tracking-wider hover:bg-[#D97706] hover:text-white transition-all">
                         <span class="relative flex h-2 w-2">
@@ -471,7 +513,7 @@
             </div>
 
             <!-- Bottom Row: Copyright, Legal, Founder -->
-            <div class="flex flex-col md:flex-row justify-between items-center text-[10px] text-[#6B7280] gap-3 md:gap-0">
+            <div class="flex flex-col md:flex-row justify-between items-center text-[10px] text-[#6B7280] gap-3 md:gap-0 text-center md:text-left">
                 <div class="flex flex-wrap justify-center gap-x-4">
                     <span>&copy; 2026 Smolify Pvt. Ltd.</span>
                     <span class="hidden md:inline text-gray-300">•</span>
@@ -503,22 +545,40 @@
 
         document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
-        // 2. Magnetic Buttons with Stability Check
+        // 2. Magnetic Buttons (Disabled on Mobile for performance/usability)
         const magneticBtns = document.querySelectorAll('.magnetic');
         
-        magneticBtns.forEach(btn => {
-            btn.addEventListener('mousemove', (e) => {
-                const rect = btn.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-                
-                // Strength of the pull
-                btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
-            });
+        if (window.matchMedia("(min-width: 768px)").matches) {
+            magneticBtns.forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    
+                    // Strength of the pull
+                    btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+                });
 
-            btn.addEventListener('mouseleave', () => {
-                // Spring back to center
-                btn.style.transform = 'translate(0px, 0px)';
+                btn.addEventListener('mouseleave', () => {
+                    // Spring back to center
+                    btn.style.transform = 'translate(0px, 0px)';
+                });
+            });
+        }
+
+        // 3. Mobile Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // Close menu when a link is clicked
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
             });
         });
 
