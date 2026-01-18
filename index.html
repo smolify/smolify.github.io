@@ -12,7 +12,11 @@
     </script>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <!-- FIX: THEME COLOR FOR BROWSER URL BAR -->
+    <meta name="theme-color" content="#FDFBF7">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
     <!-- SEO & Metatags -->
     <title>Smolify | Intelligence, Distilled.</title>
@@ -77,13 +81,19 @@
             --text-muted: #4B5563;
         }
 
-        /* Applied Unbounded Font */
+        /* FIX: FORCE HTML BACKGROUND TO REMOVE WHITE OVERSCROLL AREA */
+        html {
+            background-color: var(--bg-parchment);
+            height: 100%;
+        }
+        
         body { 
             font-family: 'Unbounded', sans-serif; 
             background-color: var(--bg-parchment); 
             color: var(--text-main); 
             overflow-x: hidden; 
             width: 100%; 
+            position: relative;
         }
         
         /* --- KINETIC BACKGROUND --- */
@@ -243,42 +253,42 @@
         <div class="orb orb-2"></div>
     </div>
 
-    <!-- Navigation (FLOATING ISLAND STYLE) -->
     <!-- 
-        Changes:
-        - Added 'top-6 left-1/2 -translate-x-1/2' for floating centering
-        - Changed 'w-full' to 'w-[92%] md:w-auto md:min-w-[700px] max-w-5xl'
-        - Added 'rounded-3xl' for the island shape
-        - Increased backdrop blur and adjusted shadows
+        NAVBAR UPDATES:
+        1. Increased max-width to 'max-w-6xl' for more breathing room.
+        2. Added specific gap utilities for spacing.
+        3. Increased padding 'px-8 py-4'.
     -->
     <nav class="fixed z-50 top-6 left-1/2 transform -translate-x-1/2 
-                w-[92%] md:w-auto md:min-w-[720px] max-w-5xl
-                bg-[#FDFBF7]/60 backdrop-blur-xl 
+                w-[90%] md:w-auto md:min-w-[760px] max-w-6xl
+                bg-[#FDFBF7]/70 backdrop-blur-xl 
                 border border-[#064E3B]/10 rounded-3xl 
                 shadow-[0_8px_32px_-4px_rgba(6,78,59,0.08)]
                 transition-all duration-300" 
          id="navbar">
         
-        <div class="px-6 py-3 flex justify-between items-center">
+        <div class="px-8 py-3 flex justify-between items-center">
             
-            <!-- Logo Section -->
-            <div class="flex items-center gap-3">
+            <!-- Logo: Added 'mr-8' to push Links away -->
+            <div class="flex items-center gap-3 mr-4 md:mr-10">
                 <img src="https://smolify.ai/smolify.gif" class="w-8 h-8 mix-blend-multiply" alt="Smolify AI Logo">
                 <span class="font-bold text-lg tracking-tight text-[#064E3B]">Smolify</span>
             </div>
             
-            <!-- Links -->
-            <div class="hidden md:flex gap-8 text-xs font-semibold text-[#4B5563] items-center px-4">
+            <!-- Links: Increased gap-8 to gap-12 -->
+            <div class="hidden md:flex gap-12 text-xs font-semibold text-[#4B5563] items-center">
                 <a href="#manifesto" class="hover:text-[#D97706] transition-colors">Manifesto</a>
                 <a href="#foundry" class="hover:text-[#D97706] transition-colors">The Foundry</a>
                 <a href="#comparison" class="hover:text-[#D97706] transition-colors">Economics</a>
                 <a href="https://smolify.ai/docs" class="hover:text-[#D97706] transition-colors">Docs</a>
             </div>
 
-            <!-- CTA Button -->
-            <a href="https://app.smolify.ai" class="magnetic bg-white hover:bg-[#064E3B] text-[#064E3B] hover:text-white px-4 py-2 rounded-full border border-[#064E3B]/20 transition-colors duration-300 shadow-sm hover:shadow-lg text-[10px] font-bold uppercase tracking-wide">
-                Launch App
-            </a>
+            <!-- CTA Button: Added 'ml-8' to push away from Links -->
+            <div class="ml-4 md:ml-10">
+                <a href="https://app.smolify.ai" class="magnetic bg-white hover:bg-[#064E3B] text-[#064E3B] hover:text-white px-5 py-2.5 rounded-full border border-[#064E3B]/20 transition-colors duration-300 shadow-sm hover:shadow-lg text-[10px] font-bold uppercase tracking-wide whitespace-nowrap">
+                    Launch App
+                </a>
+            </div>
         </div>
     </nav>
 
