@@ -99,7 +99,7 @@
             background-color: var(--bg-parchment);
         }
 
-        /* Moving Grid - UPDATED for Light Mode (Dark lines on light bg) */
+        /* Moving Grid */
         .grid-bg {
             position: absolute;
             width: 200%;
@@ -119,7 +119,7 @@
             100% { transform: perspective(500px) rotateX(60deg) translateY(60px); }
         }
 
-        /* Geometric Ring (Now Jelly Blob) - UPDATED Colors */
+        /* Geometric Ring (Now Jelly Blob) */
         .geo-ring {
             position: absolute;
             top: 50%;
@@ -148,12 +148,12 @@
             }
         }
 
-        /* Floating Orbs - UPDATED for Warmth */
+        /* Floating Orbs */
         .orb {
             position: absolute;
             border-radius: 50%;
             filter: blur(90px);
-            opacity: 0.35; /* Slightly more subtle in light mode */
+            opacity: 0.35;
             animation: floatOrb 10s infinite ease-in-out;
         }
         .orb-1 { 
@@ -174,7 +174,7 @@
 
         /* --- UI COMPONENTS --- */
 
-        /* Glassmorphism Cards - UPDATED for Light Mode (Paper/Clean look) */
+        /* Glassmorphism Cards */
         .glass {
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(12px);
@@ -192,7 +192,7 @@
             transform: translateY(-8px);
         }
 
-        /* Text Gradients - UPDATED: Vedic Emerald to Saffron */
+        /* Text Gradients */
         .text-gradient {
             background: linear-gradient(135deg, #064E3B 0%, #D97706 100%);
             -webkit-background-clip: text;
@@ -217,7 +217,7 @@
             display: inline-flex; 
         }
 
-        /* Custom Scrollbar for Chrome/Safari/Webkit */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -243,10 +243,23 @@
         <div class="orb orb-2"></div>
     </div>
 
-    <!-- Navigation -->
-    <!-- Changed bg from dark gradient to light parchment blur -->
-    <nav class="fixed w-full z-50 top-0 bg-[#FDFBF7]/80 backdrop-blur-md border-b border-[#064E3B]/5 transition-all duration-300 pb-4" id="navbar">
-        <div class="max-w-7xl mx-auto px-6 pt-4 flex justify-between items-center">
+    <!-- Navigation (FLOATING ISLAND STYLE) -->
+    <!-- 
+        Changes:
+        - Added 'top-6 left-1/2 -translate-x-1/2' for floating centering
+        - Changed 'w-full' to 'w-[92%] md:w-auto md:min-w-[700px] max-w-5xl'
+        - Added 'rounded-3xl' for the island shape
+        - Increased backdrop blur and adjusted shadows
+    -->
+    <nav class="fixed z-50 top-6 left-1/2 transform -translate-x-1/2 
+                w-[92%] md:w-auto md:min-w-[720px] max-w-5xl
+                bg-[#FDFBF7]/60 backdrop-blur-xl 
+                border border-[#064E3B]/10 rounded-3xl 
+                shadow-[0_8px_32px_-4px_rgba(6,78,59,0.08)]
+                transition-all duration-300" 
+         id="navbar">
+        
+        <div class="px-6 py-3 flex justify-between items-center">
             
             <!-- Logo Section -->
             <div class="flex items-center gap-3">
@@ -254,47 +267,45 @@
                 <span class="font-bold text-lg tracking-tight text-[#064E3B]">Smolify</span>
             </div>
             
-            <!-- Links - Updated Colors to dark with Saffron hover -->
-            <div class="hidden md:flex gap-8 text-sm font-medium text-[#4B5563] items-center">
+            <!-- Links -->
+            <div class="hidden md:flex gap-8 text-xs font-semibold text-[#4B5563] items-center px-4">
                 <a href="#manifesto" class="hover:text-[#D97706] transition-colors">Manifesto</a>
                 <a href="#foundry" class="hover:text-[#D97706] transition-colors">The Foundry</a>
                 <a href="#comparison" class="hover:text-[#D97706] transition-colors">Economics</a>
                 <a href="https://smolify.ai/docs" class="hover:text-[#D97706] transition-colors">Docs</a>
-                <a href="https://rzp.io/rzp/smolify" class="text-[#064E3B] hover:text-[#D97706] transition flex items-center gap-1 group font-semibold">
-                    <i data-lucide="credit-card" class="w-4 h-4 group-hover:scale-110 transition-transform"></i> Buy Credits
-                </a>
             </div>
 
-            <!-- CTA Button - Updated to Green Outline/Solid interaction -->
-            <a href="https://app.smolify.ai" class="magnetic bg-white hover:bg-[#064E3B] text-[#064E3B] hover:text-white px-5 py-2 rounded-full border border-[#064E3B]/20 transition-colors duration-300 shadow-sm hover:shadow-lg text-xs font-bold uppercase tracking-wide">
+            <!-- CTA Button -->
+            <a href="https://app.smolify.ai" class="magnetic bg-white hover:bg-[#064E3B] text-[#064E3B] hover:text-white px-4 py-2 rounded-full border border-[#064E3B]/20 transition-colors duration-300 shadow-sm hover:shadow-lg text-[10px] font-bold uppercase tracking-wide">
                 Launch App
             </a>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="min-h-screen flex items-center justify-center pt-20 relative">
+    <!-- Added more padding top (pt-32) to account for the floating nav overlapping content -->
+    <section class="min-h-screen flex items-center justify-center pt-32 pb-10 relative">
         <div class="text-center max-w-4xl px-6">
-            <!-- Badge: Emerald background light, Emerald text dark -->
+            <!-- Badge -->
             <div class="inline-block px-4 py-1.5 rounded-full border border-[#064E3B]/20 bg-[#064E3B]/5 text-[#064E3B] text-xs font-bold mb-6 animate-pulse tracking-wider">
                 THE POST-API ERA IS HERE
             </div>
-            <!-- Title: Darker Text -->
+            <!-- Title -->
             <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-tight text-[#111827]">
                 Intelligence, <br>
                 <span class="text-gradient">Distilled.</span>
             </h1>
-            <!-- Description: Muted Gray/Green -->
+            <!-- Description -->
             <p class="text-xl text-[#4B5563] mb-10 max-w-2xl mx-auto leading-relaxed font-light">
                 The era of renting "God Models" is over. Smolify distills massive reasoning engines into ultra-efficient, proprietary models that you <b>own</b>.
             </p>
             <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
-                <!-- Primary Button: Vedic Emerald Background -->
+                <!-- Primary Button -->
                 <a href="https://app.smolify.ai" class="magnetic group relative px-8 py-4 bg-[#064E3B] rounded-full font-bold text-[#FDFBF7] overflow-hidden shadow-lg shadow-[#064E3B]/20">
                     <div class="absolute inset-0 w-full h-full bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                     <span class="relative flex items-center gap-2">Enter The Foundry <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
                 </a>
-                <!-- Secondary Button: Outline Dark -->
+                <!-- Secondary Button -->
                 <a href="https://rzp.io/rzp/smolify" class="magnetic px-8 py-4 rounded-full border border-[#111827]/10 hover:bg-[#111827]/5 hover:border-[#111827]/30 transition text-[#111827] font-medium">
                     Get Credits
                 </a>
@@ -306,7 +317,7 @@
     <section id="manifesto" class="py-24 relative reveal">
         <div class="max-w-7xl mx-auto px-6">
             <div class="glass p-12 md:p-20 text-center relative overflow-hidden">
-                <!-- Top gradient line: Saffron to Emerald -->
+                <!-- Top gradient line -->
                 <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#064E3B] via-[#D97706] to-transparent"></div>
                 
                 <h2 class="text-3xl md:text-5xl font-bold mb-8 text-[#111827]">Stop paying rent for intelligence.</h2>
@@ -365,7 +376,6 @@
     </section>
 
     <!-- Stats / Graph Placeholder -->
-    <!-- Updated Section background to subtle off-white difference -->
     <section id="comparison" class="py-24 bg-[#E5E7EB]/30 border-y border-[#064E3B]/5 reveal">
         <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
             <div class="flex-1">
@@ -393,14 +403,14 @@
                 </ul>
             </div>
             <div class="flex-1 w-full">
-                <!-- Abstract visual of graph - Updated for Light Mode -->
+                <!-- Abstract visual of graph -->
                 <div class="glass p-8 w-full h-80 relative flex items-end gap-4 bg-white/50">
-                    <!-- Generalist Bar: Muted Gray -->
+                    <!-- Generalist Bar -->
                     <div class="w-1/2 bg-gray-300 rounded-t-2xl h-full relative group">
                         <div class="absolute bottom-4 left-0 w-full text-center text-xs text-gray-600 font-semibold">Generalist API</div>
                         <div class="absolute top-1/2 left-0 w-full text-center text-gray-500 font-bold opacity-50">High Latency</div>
                     </div>
-                    <!-- Smolify Bar: Vedic Emerald -->
+                    <!-- Smolify Bar -->
                     <div class="w-1/2 bg-[#064E3B] rounded-t-2xl h-[20%] relative group hover:h-full transition-all duration-1000 shadow-xl shadow-[#064E3B]/20">
                         <div class="absolute bottom-4 left-0 w-full text-center text-xs text-[#FDFBF7] font-bold">Smolify DSLM</div>
                         <div class="absolute -top-8 left-0 w-full text-center text-[#064E3B] font-bold">Ultra Fast</div>
