@@ -13,6 +13,8 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#FDFBF7">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
     <!-- SEO & Metatags -->
     <title>Smolify | Intelligence, Distilled.</title>
@@ -78,11 +80,8 @@
         }
         
         html {
-            /* Add this for better mobile height handling */
-            min-height: 100%;
-            min-height: -webkit-fill-available;
+            height: 100%;
         }
-        
         body { 
             font-family: 'Unbounded', sans-serif; 
             background-color: var(--bg-parchment); 
@@ -90,8 +89,6 @@
             overflow-x: hidden; 
             width: 100%; 
             position: relative;
-            min-height: 100vh;
-            min-height: -webkit-fill-available;
         }
         
         /* --- KINETIC BACKGROUND --- */
@@ -100,7 +97,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 120vh;
+            height: 100%;
             z-index: -1;
             pointer-events: none;
             overflow: hidden;
