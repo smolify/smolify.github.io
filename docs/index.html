@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CZR2FBNWT5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CZR2FBNWT5');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <title>Smolify | Intelligence, Distilled.</title>
+    
+    <!-- FAVICON -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤏</text></svg>">
+    
+    <!-- LIBRARIES -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Marked.js for parsing Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- FONT: UNBOUNDED -->
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CORE VARIABLES (Matching Index) */
+        :root {
+            --bg-parchment: #FDFBF7;
+            --green-vedic: #064E3B;
+            --saffron-marigold: #D97706;
+            --text-main: #111827;
+            --text-muted: #4B5563;
+        }
+        
+        body { 
+            font-family: 'Unbounded', sans-serif; 
+            background-color: var(--bg-parchment); 
+            color: var(--text-main); 
+            overflow-x: hidden; 
+            width: 100%; 
+        }
+
+        /* --- BACKGROUND --- */
+        .kinetic-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; background-color: var(--bg-parchment);
+        }
+        .grid-bg {
+            position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+            background-image: linear-gradient(rgba(6, 78, 59, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(6, 78, 59, 0.05) 1px, transparent 1px);
+            background-size: 60px 60px; transform: perspective(500px) rotateX(60deg); animation: gridMove 20s linear infinite;
+        }
+        @keyframes gridMove { 0% { transform: perspective(500px) rotateX(60deg) translateY(0); } 100% { transform: perspective(500px) rotateX(60deg) translateY(60px); } }
+        
+        .geo-ring {
+            position: absolute; top: 50%; left: 50%; width: 80vw; height: 80vw; max-width: 600px; max-height: 600px;
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; background: rgba(217, 119, 6, 0.03); border: 1px solid rgba(6, 78, 59, 0.08);
+            transform: translate(-50%, -50%); animation: blobMorph 15s ease-in-out infinite;
+        }
+        @keyframes blobMorph { 
+            0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translate(-50%, -50%) rotate(0deg); }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: translate(-50%, -50%) rotate(180deg); }
+            100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* --- GLASS UI --- */
+        .glass {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(6, 78, 59, 0.1); border-radius: 2rem;
+            box-shadow: 0 4px 20px -5px rgba(6, 78, 59, 0.05);
+        }
+
+        /* --- TYPOGRAPHY FOR MARKDOWN (The Prose) --- */
+        /* This ensures pasted MD looks like the site design */
+        .prose-content h1 {
+            font-size: 2.5rem; line-height: 1.2; font-weight: 800; color: var(--green-vedic); margin-bottom: 1.5rem; margin-top: 0;
+            background: linear-gradient(135deg, #064E3B 0%, #D97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .prose-content h2 { font-size: 1.75rem; font-weight: 700; color: var(--text-main); margin-top: 2.5rem; margin-bottom: 1rem; }
+        .prose-content h3 { font-size: 1.25rem; font-weight: 600; color: var(--saffron-marigold); margin-top: 2rem; margin-bottom: 0.75rem; }
+        .prose-content p { font-size: 1rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 1.25rem; font-weight: 300; }
+        
+        .prose-content a { color: var(--saffron-marigold); font-weight: 500; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.2s; }
+        .prose-content a:hover { border-bottom-color: var(--saffron-marigold); color: var(--green-vedic); }
+        
+        /* Lists */
+        .prose-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-muted); }
+        .prose-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-muted); }
+        .prose-content li { margin-bottom: 0.5rem; line-height: 1.6; }
+        
+        /* Code Blocks */
+        .prose-content pre { background: #111827; padding: 1.25rem; border-radius: 1rem; overflow-x: auto; margin-bottom: 1.5rem; border: 1px solid rgba(6,78,59,0.2); }
+        .prose-content code { font-family: 'Consolas', 'Monaco', monospace; font-size: 0.85em; }
+        .prose-content pre code { color: #e2e8f0; background: transparent; padding: 0; }
+        .prose-content p code, .prose-content li code { background: rgba(6, 78, 59, 0.08); padding: 0.1rem 0.3rem; border-radius: 0.3rem; color: var(--green-vedic); font-weight: 500; }
+        
+        /* Tables */
+        .prose-content table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; font-size: 0.9rem; }
+        .prose-content th { text-align: left; padding: 1rem; background: rgba(6, 78, 59, 0.05); color: var(--green-vedic); font-weight: 700; border-bottom: 2px solid rgba(6, 78, 59, 0.1); }
+        .prose-content td { padding: 1rem; border-bottom: 1px solid rgba(0,0,0,0.05); color: var(--text-muted); }
+
+        /* Blockquotes */
+        .prose-content blockquote { border-left: 4px solid var(--saffron-marigold); padding-left: 1rem; font-style: italic; background: rgba(217, 119, 6, 0.05); padding: 1rem; border-radius: 0 1rem 1rem 0; margin-bottom: 1.5rem; }
+
+        /* Hr */
+        .prose-content hr { border: 0; height: 1px; background: rgba(6,78,59,0.1); margin: 3rem 0; }
+
+        /* Mobile Menu */
+        #mobile-menu { transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out; max-height: 0; opacity: 0; overflow: hidden; }
+        #mobile-menu.open { max-height: 400px; opacity: 1; }
+    </style>
+</head>
+<body class="antialiased selection:bg-[#D97706] selection:text-white pb-32">
+
+    <!-- Kinetic Background -->
+    <div class="kinetic-bg">
+        <div class="grid-bg"></div>
+        <div class="geo-ring"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed z-50 top-5 left-1/2 transform -translate-x-1/2 w-[95%] md:w-[92%] bg-[#FDFBF7]/60 backdrop-blur-xl border border-[#064E3B]/10 rounded-3xl shadow-sm transition-all duration-300">
+        <div class="px-5 md:px-6 py-3 flex justify-between items-center relative">
+            <a href="https://smolify.ai" class="flex items-center gap-3 group">
+                <img src="https://smolify.ai/smolify.gif" class="w-8 h-8 mix-blend-multiply transition-transform group-hover:scale-110" alt="Smolify AI Logo">
+                <span class="font-bold text-lg tracking-tight text-[#064E3B]">Smolify</span>
+            </a>
+            
+            <div class="hidden md:flex gap-8 text-sm font-medium text-[#4B5563] items-center">
+                <a href="https://smolify.ai/docs" class="hover:text-[#D97706] transition-colors flex items-center gap-2"><i data-lucide="notebook-text" class="w-4 h-4"></i> Docs</a>
+                <a href="https://smolify.ai/careers" class="hover:text-[#D97706] transition-colors flex items-center gap-2"><i data-lucide="briefcase-business" class="w-4 h-4"></i> Careers</a>
+                <a href="https://rzp.io/rzp/smolify" class="text-[#064E3B] hover:text-[#D97706] transition flex items-center gap-2 font-semibold">
+                    <i data-lucide="credit-card" class="w-4 h-4"></i> Credits
+                </a>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="https://app.smolify.ai" class="hidden md:inline-flex bg-white hover:bg-[#064E3B] text-[#064E3B] hover:text-white px-5 py-2 rounded-full border border-[#064E3B]/20 transition-colors duration-300 text-xs font-bold uppercase tracking-wide">
+                    Launch App
+                </a>
+                <button id="menu-btn" class="md:hidden text-[#064E3B] p-2 focus:outline-none">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden border-t border-[#064E3B]/5 bg-[#FDFBF7]/90 backdrop-blur-xl rounded-b-3xl">
+            <div class="flex flex-col p-6 gap-4 text-center">
+                <a href="https://smolify.ai/docs" class="text-[#064E3B] font-bold py-2"><i data-lucide="notebook-text" class="inline w-4 h-4"></i> Docs</a>
+                <a href="https://smolify.ai/careers" class="text-[#064E3B] font-bold py-2"><i data-lucide="briefcase-business" class="inline w-4 h-4"></i> Careers</a>
+                <a href="https://app.smolify.ai" class="bg-[#D97706] text-white px-5 py-3 rounded-xl font-bold uppercase text-xs">Launch App</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT SECTION -->
+    <main class="pt-32 pb-20 min-h-screen">
+        <div class="max-w-4xl mx-auto px-4 md:px-6">
+            <!-- Glass Paper Container -->
+            <div class="glass p-8 md:p-14 relative overflow-hidden">
+                <!-- Top Decor Line -->
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#064E3B] via-[#D97706] to-transparent opacity-50"></div>
+                
+                <!-- CONTENT RENDERED HERE -->
+                <div id="content-render" class="prose-content">
+                    <!-- Loading state -->
+                    <div class="animate-pulse space-y-4">
+                        <div class="h-8 bg-gray-200 rounded w-3/4"></div>
+                        <div class="h-4 bg-gray-200 rounded w-full"></div>
+                        <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-0 mb-10">
+        <div class="w-[95%] md:w-[92%] mx-auto bg-[#FDFBF7]/60 backdrop-blur-xl border border-[#064E3B]/10 rounded-3xl px-6 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-[#6B7280]">
+                <div class="flex items-center gap-2">
+                    <span class="font-bold text-[#111827]">&copy; 2026 Smolify</span>
+                    <span>•</span>
+                    <a href="mailto:info@smolify.ai" class="hover:text-[#D97706] transition">info@smolify.ai</a>
+                </div>
+                <div class="flex gap-4 font-medium">
+                    <a href="/terms" class="hover:text-[#064E3B] transition">Terms</a>
+                    <a href="/privacy" class="hover:text-[#064E3B] transition">Privacy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MARKDOWN DATA SOURCE -->
+    <!-- ======================================================= -->
+    <!--      PASTE YOUR MARKDOWN CONTENT BELOW THIS LINE        -->
+    <!-- ======================================================= -->
+    <script type="text/markdown" id="markdown-source">
+# Welcome to Smolify
+
+**Intelligence, Distilled.**
+
+Smolify is a foundry for **Domain Specific Language Models (DSLMs)**. We allow developers to distill the reasoning capabilities of massive, general-purpose models (like GPT-5, Claude 4.5, and Gemini 3) into ultra-compact, sovereign models (like Gemma 3 270M) that you own, host, and run anywhere.
+
+### Why Distill?
+
+*   **Sovereignty:** You own the weights. No API deprecations.
+*   **Privacy:** Run locally on device (CPU/NPU). Data never leaves your perimeter.
+*   **Cost:** Inference costs $0.
+*   **Latency:** Sub-10ms response times on edge hardware.
+
+### The Foundry Process
+
+1.  **Define:** You describe a capability (e.g., "Clinical Scribe").
+2.  **Synthesize:** We generate thousands of high-fidelity synthetic training examples.
+3.  **Distill:** We fine-tune a specialized Nano-LLM using Neural Distillation.
+4.  **Deploy:** You download the weights and run them via `transformers` or `vLLM`.
+
+---
+
+### Documentation Map
+
+*   [**Get Started**](/docs/get-started): Launch your first distillation job in 5 minutes.
+*   [**vLLM Deployment**](/docs/vllm): Get higher throughput and an API server.
+*   [**Core Concepts**](/docs/concepts): Understand Synthesis, Distillation, and DSLMs.
+*   [**Model Architecture**](/docs/models): Technical specs of the Gemma 3-based output models.
+    </script>
+    <!-- ======================================================= -->
+    <!--           END OF MARKDOWN CONTENT AREA                  -->
+    <!-- ======================================================= -->
+
+    <script>
+        // 1. Initialize Icons
+        lucide.createIcons();
+
+        // 2. Mobile Menu Logic
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+
+        // 3. Render Markdown
+        document.addEventListener('DOMContentLoaded', () => {
+            const rawMarkdown = document.getElementById('markdown-source').textContent;
+            const container = document.getElementById('content-render');
+            
+            // Configure Marked.js
+            marked.use({
+                breaks: true, // Enable line breaks
+                gfm: true     // Enable GitHub Flavored Markdown (Tables, etc)
+            });
+
+            // Parse and Inject
+            container.innerHTML = marked.parse(rawMarkdown);
+
+            // Re-run Lucide icons in case the markdown had icon tags (unlikely but good practice)
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
