@@ -79,3 +79,9 @@ We carve out time for reflection in order to unblock ourselves. We believe perso
 *   We deliberately find time for reflection; we believe this is where life-changing adjustments come from.
 *   We find the time to jump out of the trenches into higher-level thinking that will move the needle.
 *   We understand the value of patience and treat it as a muscle, which needs practice to grow.
+
+---
+
+# Open roles
+
+### [Enterprise Account Executive](/careers/sales-1)
