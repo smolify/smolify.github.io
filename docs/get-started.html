@@ -207,7 +207,10 @@ Smolify is a platform designed to "distill" massive reasoning engines into ultra
 
 ## Step 1: Authentication
 
-The application sidebar handles all authentication.
+The application sidebar handles all authentication and credit management.
+
+![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/1.png)
+*(The Restricted Access modal requires a valid API key to proceed)*
 
 1.  **If you have an API Key:** Enter it in the sidebar field and click **Authenticate**.
 2.  **If you are new:**
@@ -215,11 +218,19 @@ The application sidebar handles all authentication.
     *   Enter your email and click **Register**.
     *   Check your inbox (and spam) for your `sk-smolify-...` key.
 
+![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/2.png)
+
 *Once authenticated, you will see your current Credit Balance and Job History in the sidebar.*
+
+![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/3.png)
+*(The sidebar confirms your identity and shows your remaining balance—0 in this example—along with navigation to the Model Foundry)*
 
 ## Step 2: Define Your Mission
 
-You can define your model's behavior using one of three methods:
+You can define your model's behavior using one of three methods. The dashboard provides a streamlined interface for inputting your requirements.
+
+![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/4.png)
+*(The Main Dashboard: Select a trending template or manually input your Project Name, System Persona, and Business Capability)*
 
 ### Option A: Trending Templates (Fastest)
 Click a **Trending Template** pill at the top of the dashboard (e.g., "🏥 Clinical Scribe").
@@ -227,9 +238,13 @@ Click a **Trending Template** pill at the top of the dashboard (e.g., "🏥 Clin
 
 ### Option B: Define from Scratch (Recommended)
 Navigate to the **"✍️ Define Mission"** tab:
-*   **Project Name:** A unique handle (e.g., `Pirate-Email-Converter`).
-*   **System Persona:** The "identity" of the AI (e.g., *"You are a salty pirate captain"*).
+*   **Project Name:** A unique handle (e.g., `Tiny Text-to-SQL`).
+*   **System Persona:** The "identity" of the AI (e.g., *"You are a SQL generator..."*).
 *   **Description:** A clear explanation of the task, inputs, and desired outputs.
+
+![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/5.png)
+
+*   **Web Grounding:** As seen in the tooltip above, you can enable **Web Grounding** to search the web for real-time facts. This is particularly useful to improve dataset accuracy if your model requires up-to-date knowledge rather than just logic.
 
 ### Option C: Upload Data (Beta)
 Navigate to the **"📄 Upload Training Data"** tab.
@@ -240,14 +255,21 @@ Navigate to the **"📄 Upload Training Data"** tab.
 
 1.  Click **✨ Synthesize Preview**.
 2.  The app will generate a sample table under **"🔎 Review Synthetic Data"**.
-3.  **Live Editing:** This is an interactive table. Click any cell to correct logic errors before the full distillation process begins.
+
+![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/6.png)
+*(The Review Interface: You can inspect the System Prompt, User Input, and Target Output. The red outline indicates a cell is currently being edited)*
+
+3.  **Live Editing:** This is an interactive table. Click any cell to correct logic errors before the full distillation process begins. This ensures your "teacher" model isn't passing down bad habits.
 
 ## Step 4: Select Pipeline Power
 
-Smolify offers two distinct synthesis engines. Choose the one that fits your needs:
+Smolify offers two distinct synthesis engines. Choose the one that fits your needs. The interface will estimate the cost before you proceed.
 
 ### 🏆 Option A: Managed Pipeline (1 Credit)
 **Best for: Production-grade models, complex reasoning tasks.**
+
+![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/7.png)
+*(The Managed Pipeline estimation panel shows the credit cost. If you lack funds, you will see an "Insufficient Credits" warning)*
 
 The Managed Pipeline utilizes a **Consensus Engine**. We aggregate outputs from various SOTA (State-of-the-Art) reasoning models (including OpenAI GPT-5, Anthropic Claude 4.5, and Google Gemini 3) to ensure the highest fidelity synthetic data.
 *   **Zero Config:** We handle quotas and model routing.
@@ -257,25 +279,54 @@ The Managed Pipeline utilizes a **Consensus Engine**. We aggregate outputs from 
 **Best for: Prototyping, hobbyists, low-cost experiments.**
 
 If you have your own credentials, you can run the foundry for free.
+
+![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/8.png)
+*(The BYOK panel allows you to paste a Google Gemini API Key to initialize the pipeline without deducting platform credits)*
+
 1.  Expand **"⚙️ Advanced Options"**.
-2.  Enter your **Google Gemini API Key**.
-3.  **Engine:** This pipeline strictly uses **Gemini 2.5 Flash**. While fast and efficient, it lacks the multi-model consensus of the managed tier.
-4.  *Note: You are responsible for your own API rate limits.*
+2.  **Get your Key:** You can generate a key via [Google AI Studio](https://aistudio.google.com/api-keys).
+    ![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/9.png)
+3.  Enter your **Google Gemini API Key**.
+4.  **Engine:** This pipeline strictly uses **Gemini 2.5 Flash**. While fast and efficient, it lacks the multi-model consensus of the managed tier.
+5.  *Note: You are responsible for your own API rate limits.*
 
 ## Step 5: Hosting & Launch
 
-By default, models are hosted on the public `smolify` Hugging Face organization. To push to your own account:
-1.  Expand **"⚙️ Advanced Options"**.
-2.  Enter your **HF Write Token** and **Username/Org**.
+By default, models are hosted on the public `smolify` Hugging Face organization. To push to your own account, you must configure your Hugging Face credentials.
+
+1.  Go to your Hugging Face Profile settings to find your [**Access Tokens**](https://huggingface.co/settings/tokens).
+    ![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/10.png)
+2.  **Create a New Token:**
+    ![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/11.png)
+    *   **Crucial Step:** Ensure you select **Write** permissions (not just Read) so Smolify can push the model to your hub. Name it something recognizable like `smolify`.
+3.  Expand **"⚙️ Advanced Options"** in Smolify.
+    ![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/12.png)
+4.  Enter your **HF Write Token** and your **Username/Org** (e.g., `rishiraj`).
 
 Click **Initialize Foundry Pipeline**. The system will now:
 1.  Generate ~10,000 synthetic examples.
 2.  Spin up an L4 GPU node.
 3.  Fine-tune a **Gemma 3 (270M)** model on your data.
 
-## Step 6: Inference
+![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/13.png)
+*(The Foundry Status log provides real-time JSON feedback, showing the Job ID, current progress, and the number of high-fidelity records synthesized)*
 
-When the status changes to **Distillation Complete**, click the **📦 Open Model** link.
+## Step 6: Inference & Results
+
+When the process finishes, you will see a success banner.
+
+![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/14.png)
+*(Success! You will be presented with direct links to your Open Model and Open Dataset)*
+
+When the status changes to **Distillation Complete**, click the **📦 Open Model** link. You can also view the raw JSON result containing the model URL.
+
+### Your Artifacts
+Smolify automatically generates two repositories on Hugging Face:
+
+1.  **The Dataset:** A visible record of the synthetic data used for training.
+    ![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/15.png)
+2.  **The Model:** Your fine-tuned DSLM, complete with a model card describing the architecture.
+    ![](https://raw.githubusercontent.com/smolify/smolify.github.io/refs/heads/main/docs/images/16.png)
 
 Your model is optimized for edge deployment. You can run it using `transformers`:
 
