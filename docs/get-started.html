@@ -85,6 +85,26 @@
         .prose-content h3 { font-size: 1.25rem; font-weight: 600; color: var(--saffron-marigold); margin-top: 2rem; margin-bottom: 0.75rem; }
         .prose-content p { font-size: 1rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 1.25rem; font-weight: 300; }
         
+        .prose-content img {
+            max-width: 100%;       /* Ensure it never overflows width */
+            max-height: 500px;     /* Cap the height so square images don't dominate */
+            width: auto;           /* Maintain aspect ratio */
+            height: auto;
+            display: block;        /* Prevent inline quirks */
+            margin: 2rem auto;     /* Center horizontally */
+            border-radius: 1rem;   /* Match theme rounding */
+            border: 1px solid rgba(6, 78, 59, 0.1); /* Subtle border */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); /* Lift off page */
+        }
+        .prose-content em { 
+            display: block; 
+            text-align: center; 
+            font-size: 0.875rem; 
+            color: var(--text-muted); 
+            margin-top: -1.5rem; 
+            margin-bottom: 2rem; 
+        }
+
         .prose-content a { color: var(--saffron-marigold); font-weight: 500; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.2s; }
         .prose-content a:hover { border-bottom-color: var(--saffron-marigold); color: var(--green-vedic); }
         
