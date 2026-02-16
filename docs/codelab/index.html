@@ -28,7 +28,7 @@
                   environment="web"
                   feedback-link="https://github.com/smolify/smolify.github.io/issues">
     
-      <google-codelab-step label="Introduction" duration="1">
+      <google-codelab-step label="Introduction" duration="2">
         <p>The era of the &#34;God Model&#34;—the obsession with trillion-parameter behemoths—has hit a wall. As demonstrated by recent disruptions in the AI industry, the future isn&#39;t solely about bigger parameters; it&#39;s about smarter data and <strong>Intelligence Distillation</strong>. We are shifting from a paradigm of <em>renting</em> generalist intelligence via APIs to <em>owning</em> specific, high-performance models that run locally.</p>
 <p>In this deep-dive session, we will turn natural language intent into a deployable, edge-ready Google Gemma model.</p>
 <h2 is-upgraded>What you will learn</h2>
@@ -48,7 +48,7 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="The DeepSeek Effect &amp; The Shift" duration="1">
+      <google-codelab-step label="The DeepSeek Effect &amp; The Shift" duration="5">
         <p>Before we write code, we must understand the &#34;Why.&#34; The industry is pivoting from massive compute to specialized efficiency.</p>
 <h2 is-upgraded>Renting vs. Owning</h2>
 <p>For the past few years, developers have relied on &#34;renting&#34; intelligence. You send a prompt to GPT-4 or Claude, pay a fee per token, and get a response. This is excellent for generalist tasks but inefficient for specific business logic.</p>
@@ -69,7 +69,7 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="The Core Theory of Knowledge Distillation" duration="1">
+      <google-codelab-step label="The Core Theory of Knowledge Distillation" duration="10">
         <p>We will dissect the mechanics of <strong>Knowledge Distillation (KD)</strong>, tracing its roots from Hinton&#39;s 2015 origins to modern algorithms.</p>
 <p class="image-container"><img src="img/23945a5d4c128b48.png"></p>
 <h2 is-upgraded>Dark Knowledge and Logits</h2>
@@ -93,7 +93,7 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="Introduction to Smolify" duration="1">
+      <google-codelab-step label="Introduction to Smolify" duration="3">
         <p>Theory is nothing without execution. <strong>Smolify</strong> is a platform designed to &#34;distill&#34; massive reasoning engines into ultra-efficient, proprietary models. It acts as a &#34;Magic Box&#34; pipeline that automates the complex steps of:</p>
 <ol type="1">
 <li><strong>Prompt Engineering:</strong> Creating the perfect system instructions.</li>
@@ -106,7 +106,7 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="Step 1: Authentication" duration="1">
+      <google-codelab-step label="Step 1: Authentication" duration="2">
         <p>The application sidebar handles all authentication and credit management.</p>
 <p><img src="img/47f6c0de0f393dd9.png"><em>(The Restricted Access modal requires a valid API key to proceed)</em></p>
 <ol type="1">
@@ -125,7 +125,7 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="Step 2: Define Your Mission" duration="1">
+      <google-codelab-step label="Step 2: Define Your Mission" duration="5">
         <p>You can define your model&#39;s behavior using one of three methods. The dashboard provides a streamlined interface for inputting your requirements.</p>
 <p><img src="img/f003436cb8096ed8.png"><em>(The Main Dashboard: Select a trending template or manually input your Project Name, System Persona, and Business Capability)</em></p>
 <h2 is-upgraded>Option A: Trending Templates (Fastest)</h2>
@@ -154,7 +154,7 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="Step 3: Synthesize &amp; Review" duration="1">
+      <google-codelab-step label="Step 3: Synthesize &amp; Review" duration="5">
         <p>Now we will use the Teacher model to generate the &#34;Soft Targets&#34; and training examples.</p>
 <ol type="1">
 <li>Click <strong>✨ Synthesize Preview</strong>.</li>
@@ -170,7 +170,7 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="Step 4: Select Pipeline Power" duration="1">
+      <google-codelab-step label="Step 4: Select Pipeline Power" duration="3">
         <p>Smolify offers two distinct synthesis engines. Choose the one that fits your needs. The interface will estimate the cost before you proceed.</p>
 <h2 is-upgraded>🏆 Option A: Managed Pipeline (1 Credit)</h2>
 <p><strong>Best for: Production-grade models, complex reasoning tasks.</strong></p>
@@ -195,7 +195,7 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="Step 5: Hosting &amp; Launch" duration="1">
+      <google-codelab-step label="Step 5: Hosting &amp; Launch" duration="15">
         <p>By default, models are hosted on the public <code>smolify</code> Hugging Face organization. To push to your own account, you must configure your Hugging Face credentials.</p>
 <ol type="1">
 <li>Go to your Hugging Face Profile settings to find your <a href="https://huggingface.co/settings/tokens" target="_blank"><strong>Access Tokens</strong></a>. <img src="img/4f003ff53a0dc023.png"></li>
@@ -218,7 +218,7 @@
 
       </google-codelab-step>
     
-      <google-codelab-step label="Step 6: Inference &amp; Results" duration="1">
+      <google-codelab-step label="Step 6: Inference &amp; Results" duration="8">
         <p>When the process finishes, you will see a success banner.</p>
 <p><img src="img/5d0e810d57e1d679.png"><em>(Success! You will be presented with direct links to your Open Model and Open Dataset)</em></p>
 <p>When the status changes to <strong>Distillation Complete</strong>, click the <strong>📦 Open Model</strong> link. You can also view the raw JSON result containing the model URL.</p>
@@ -254,7 +254,7 @@ print(output)
 
       </google-codelab-step>
     
-      <google-codelab-step label="Congratulations" duration="1">
+      <google-codelab-step label="Congratulations" duration="2">
         <p>You have successfully distilled SOTA intelligence into a local Gemma model!</p>
 <h2 class="checklist" is-upgraded>What we&#39;ve covered</h2>
 <ul class="checklist">
