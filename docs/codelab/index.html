@@ -1,0 +1,284 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Build with Gemma locally on CPU by Distilling SOTA Intelligence</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid="G-CZR2FBNWT5"
+                  codelab-ga4id=""
+                  id="build-with-gemma"
+                  title="Build with Gemma locally on CPU by Distilling SOTA Intelligence"
+                  environment="web"
+                  feedback-link="https://github.com/smolify/smolify.github.io/issues">
+    
+      <google-codelab-step label="Introduction" duration="1">
+        <p>The era of the &#34;God Model&#34;—the obsession with trillion-parameter behemoths—has hit a wall. As demonstrated by recent disruptions in the AI industry, the future isn&#39;t solely about bigger parameters; it&#39;s about smarter data and <strong>Intelligence Distillation</strong>. We are shifting from a paradigm of <em>renting</em> generalist intelligence via APIs to <em>owning</em> specific, high-performance models that run locally.</p>
+<p>In this deep-dive session, we will turn natural language intent into a deployable, edge-ready Google Gemma model.</p>
+<h2 is-upgraded>What you will learn</h2>
+<ul>
+<li><strong>The DeepSeek Effect:</strong> Why the industry is pivoting to &#34;Teacher-Student&#34; topologies.</li>
+<li><strong>Knowledge Distillation (KD) Theory:</strong> How to transfer &#34;Dark Knowledge&#34; from a large model to a small one.</li>
+<li><strong>Smolify Pipeline:</strong> How to synthesize high-fidelity training data and fine-tune Gemma 3.</li>
+<li><strong>Local Inference:</strong> Running your proprietary model on a CPU.</li>
+</ul>
+<h2 is-upgraded>What you will need</h2>
+<ul>
+<li>A browser (Chrome recommended).</li>
+<li>A <a href="https://huggingface.co/" target="_blank">Hugging Face</a> account (for model hosting).</li>
+<li>Optional: A Google Gemini API Key (for the free pipeline tier).</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="The DeepSeek Effect &amp; The Shift" duration="1">
+        <p>Before we write code, we must understand the &#34;Why.&#34; The industry is pivoting from massive compute to specialized efficiency.</p>
+<h2 is-upgraded>Renting vs. Owning</h2>
+<p>For the past few years, developers have relied on &#34;renting&#34; intelligence. You send a prompt to GPT-4 or Claude, pay a fee per token, and get a response. This is excellent for generalist tasks but inefficient for specific business logic.</p>
+<ul>
+<li><strong>Latency:</strong> Network roundtrips kill real-time interactions.</li>
+<li><strong>Cost:</strong> Costs scale linearly with usage.</li>
+<li><strong>Privacy:</strong> Data leaves your perimeter.</li>
+</ul>
+<p>The <strong>DeepSeek Effect</strong> refers to the realization that specific business problems require specific, efficient solutions—often called <strong>DSLMs (Domain Specific Language Models)</strong>. By owning a smaller model, you eliminate marginal costs and keep data local.</p>
+<h2 is-upgraded>Teacher-Student Topology</h2>
+<p>How do we make a small model smart? We don&#39;t train it from scratch on the entire internet. We use a <strong>Teacher-Student Topology</strong>.</p>
+<ol type="1">
+<li><strong>The Teacher:</strong> A massive, reasoning-heavy model (like GPT-4 or Gemini Ultra). It knows <em>everything</em> but is slow and expensive.</li>
+<li><strong>The Student:</strong> A compact architecture (like Gemma 270M or 2B). It is fast and cheap but initially &#34;empty.&#34;</li>
+</ol>
+<p>Our goal is to force the Student to mimic the Teacher&#39;s specific reasoning capabilities for a specific domain, ignoring general world knowledge that isn&#39;t relevant to the task.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="The Core Theory of Knowledge Distillation" duration="1">
+        <p>We will dissect the mechanics of <strong>Knowledge Distillation (KD)</strong>, tracing its roots from Hinton&#39;s 2015 origins to modern algorithms.</p>
+<p class="image-container"><img src="img/23945a5d4c128b48.png"></p>
+<h2 is-upgraded>Dark Knowledge and Logits</h2>
+<p>When a large language model makes a prediction, it doesn&#39;t just output a single word; it calculates a probability distribution over its entire vocabulary.</p>
+<ul>
+<li><strong>Hard Target:</strong> The actual correct word (e.g., &#34;Cat&#34;).</li>
+<li><strong>Soft Targets (Logits):</strong> The probabilities of <em>other</em> words. For example, if the image is a dog, the model might assign 0.9 to &#34;Dog&#34;, 0.09 to &#34;Cat&#34;, and 0.0001 to &#34;Car&#34;.</li>
+</ul>
+<p>The fact that &#34;Cat&#34; is higher than &#34;Car&#34; tells the model that the image looks <em>somewhat</em> like a cat, but nothing like a car. Hinton called this <strong>&#34;Dark Knowledge.&#34;</strong> Traditional training only focuses on the Hard Target. Knowledge Distillation forces the student to match the Teacher&#39;s <em>Soft Targets</em>, learning the nuance of the decision boundary.</p>
+<h2 is-upgraded>Softmax Temperature</h2>
+<p>To make these relationships clearer, we use <strong>Temperature (T)</strong> in the Softmax function.</p>
+<ul>
+<li><strong>Low T:</strong> The distribution is peaky (confident).</li>
+<li><strong>High T:</strong> The distribution flattens, revealing the relationships between incorrect classes (the &#34;Dark Knowledge&#34;).</li>
+</ul>
+<p>During distillation, we often raise <code>T</code> so the student can see the rich structure of the teacher&#39;s reasoning.</p>
+<h2 is-upgraded>Scaling Laws</h2>
+<p>Scaling laws dictate how a student learns. We don&#39;t need a Student to have the same parameter count as the Teacher. Research shows that a Student can achieve ~95% of a Teacher&#39;s performance on a <em>specific task</em> with less than 1/10th of the parameters, provided the data quality is pristine.</p>
+<p>This is where <strong>Smolify</strong> comes in.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Introduction to Smolify" duration="1">
+        <p>Theory is nothing without execution. <strong>Smolify</strong> is a platform designed to &#34;distill&#34; massive reasoning engines into ultra-efficient, proprietary models. It acts as a &#34;Magic Box&#34; pipeline that automates the complex steps of:</p>
+<ol type="1">
+<li><strong>Prompt Engineering:</strong> Creating the perfect system instructions.</li>
+<li><strong>Synthesis:</strong> Using a Teacher model to generate synthetic training data.</li>
+<li><strong>Refinement:</strong> Cleaning the data via consensus mechanisms.</li>
+<li><strong>Fine-tuning:</strong> Training a specific Gemma model on that data via LoRA/QLoRA.</li>
+</ol>
+<p>In the following steps, we will walk through defining, synthesizing, and training your specific model within the Foundry. Let&#39;s open <a href="https://smolify.ai/" target="_blank">Smolify.AI</a> and click &#34;Enter The Foundry&#34;.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Step 1: Authentication" duration="1">
+        <p>The application sidebar handles all authentication and credit management.</p>
+<p><img src="img/47f6c0de0f393dd9.png"><em>(The Restricted Access modal requires a valid API key to proceed)</em></p>
+<ol type="1">
+<li><strong>If you have an API Key:</strong> Enter it in the sidebar field and click <strong>Authenticate</strong>.</li>
+<li><strong>If you are new:</strong><ul>
+<li>Expand the <strong>&#34;No Key? Get one for free!&#34;</strong> section.</li>
+<li>Enter your email and click <strong>Register</strong>.</li>
+<li>Check your inbox (and spam) for your <code>sk-smolify-...</code> key.</li>
+</ul>
+</li>
+</ol>
+<p class="image-container"><img src="img/7616d9f89e37cd49.png"></p>
+<p><em>Once authenticated, you will see your current Credit Balance and Job History in the sidebar.</em></p>
+<p><img src="img/b1f3b26b51aad341.png"><em>(The sidebar confirms your identity and shows your remaining balance—0 in this example—along with navigation to the Model Foundry)</em></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Step 2: Define Your Mission" duration="1">
+        <p>You can define your model&#39;s behavior using one of three methods. The dashboard provides a streamlined interface for inputting your requirements.</p>
+<p><img src="img/f003436cb8096ed8.png"><em>(The Main Dashboard: Select a trending template or manually input your Project Name, System Persona, and Business Capability)</em></p>
+<h2 is-upgraded>Option A: Trending Templates (Fastest)</h2>
+<p>Click a <strong>Trending Template</strong> pill at the top of the dashboard (e.g., &#34;🏥 Clinical Scribe&#34;).</p>
+<ul>
+<li><strong>Action:</strong> Automatically pre-fills the Project Name, System Persona, and Description with battle-tested prompts known to produce high-quality synthetic data.</li>
+</ul>
+<h2 is-upgraded>Option B: Define from Scratch (Recommended)</h2>
+<p>Navigate to the <strong>&#34;✍️ Define Mission&#34;</strong> tab:</p>
+<ul>
+<li><strong>Project Name:</strong> A unique handle (e.g., <code>Tiny Text-to-SQL</code>).</li>
+<li><strong>System Persona:</strong> The &#34;identity&#34; of the AI (e.g., <em>&#34;You are a SQL generator...&#34;</em>).</li>
+<li><strong>Description:</strong> A clear explanation of the task, inputs, and desired outputs.</li>
+</ul>
+<p class="image-container"><img src="img/94a1903607123f2a.png"></p>
+<ul>
+<li><strong>Web Grounding:</strong> As seen in the tooltip above, you can enable <strong>Web Grounding</strong> to search the web for real-time facts. This is particularly useful to improve dataset accuracy if your model requires up-to-date knowledge rather than just logic.</li>
+</ul>
+<h2 is-upgraded>Option C: Upload Data (Beta)</h2>
+<p>Navigate to the <strong>&#34;📄 Upload Training Data&#34;</strong> tab.</p>
+<ul>
+<li><strong>Format:</strong> CSV or JSON.</li>
+<li><strong>Schema:</strong> Columns must map to <code>system</code>, <code>user</code>, and <code>assistant</code>.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Step 3: Synthesize &amp; Review" duration="1">
+        <p>Now we will use the Teacher model to generate the &#34;Soft Targets&#34; and training examples.</p>
+<ol type="1">
+<li>Click <strong>✨ Synthesize Preview</strong>.</li>
+<li>The app will generate a sample table under <strong>&#34;🔎 Review Synthetic Data&#34;</strong>.</li>
+</ol>
+<p><img src="img/b210e69df57c34b5.png"><em>(The Review Interface: You can inspect the System Prompt, User Input, and Target Output. The red outline indicates a cell is currently being edited)</em></p>
+<ol type="1" start="3">
+<li><strong>Live Editing:</strong> This is an interactive table. Click any cell to correct logic errors before the full distillation process begins. This ensures your &#34;teacher&#34; model isn&#39;t passing down bad habits.</li>
+</ol>
+<aside class="warning"><p><strong>Warning:</strong> Garbage In, Garbage Out. If the Teacher model hallucinates during this preview phase, your Student model will learn that hallucination as truth. Review carefully!</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Step 4: Select Pipeline Power" duration="1">
+        <p>Smolify offers two distinct synthesis engines. Choose the one that fits your needs. The interface will estimate the cost before you proceed.</p>
+<h2 is-upgraded>🏆 Option A: Managed Pipeline (1 Credit)</h2>
+<p><strong>Best for: Production-grade models, complex reasoning tasks.</strong></p>
+<p><img src="img/ad922bfd9058b5b2.png"><em>(The Managed Pipeline estimation panel shows the credit cost. If you lack funds, you will see an &#34;Insufficient Credits&#34; warning)</em></p>
+<p>The Managed Pipeline utilizes a <strong>Consensus Engine</strong>. We aggregate outputs from various SOTA (State-of-the-Art) reasoning models (including OpenAI GPT-5, Anthropic Claude 4.5, and Google Gemini 3) to ensure the highest fidelity synthetic data.</p>
+<ul>
+<li><strong>Zero Config:</strong> We handle quotas and model routing.</li>
+<li><strong>Higher Quality:</strong> Multi-model verification reduces hallucinations in the training data.</li>
+</ul>
+<h2 is-upgraded>🛠️ Option B: BYOK / Free Mode</h2>
+<p><strong>Best for: Prototyping, hobbyists, low-cost experiments.</strong></p>
+<p>If you have your own credentials, you can run the foundry for free.</p>
+<p><img src="img/7f3a21e2bb4315da.png"><em>(The BYOK panel allows you to paste a Google Gemini API Key to initialize the pipeline without deducting platform credits)</em></p>
+<ol type="1">
+<li>Expand <strong>&#34;⚙️ Advanced Options&#34;</strong>.</li>
+<li><strong>Get your Key:</strong> You can generate a key via <a href="https://aistudio.google.com/api-keys" target="_blank">Google AI Studio</a>. <img src="img/86e4759cb91d3ead.png"></li>
+<li>Enter your <strong>Google Gemini API Key</strong>.</li>
+<li><strong>Engine:</strong> This pipeline strictly uses <strong>Gemini 2.5 Flash</strong>. While fast and efficient, it lacks the multi-model consensus of the managed tier.</li>
+<li><em>Note: You are responsible for your own API rate limits.</em></li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Step 5: Hosting &amp; Launch" duration="1">
+        <p>By default, models are hosted on the public <code>smolify</code> Hugging Face organization. To push to your own account, you must configure your Hugging Face credentials.</p>
+<ol type="1">
+<li>Go to your Hugging Face Profile settings to find your <a href="https://huggingface.co/settings/tokens" target="_blank"><strong>Access Tokens</strong></a>. <img src="img/4f003ff53a0dc023.png"></li>
+<li><strong>Create a New Token:</strong><img src="img/3467bff8ef23b3b.png"><ul>
+<li><strong>Crucial Step:</strong> Ensure you select <strong>Write</strong> permissions (not just Read) so Smolify can push the model to your hub. Name it something recognizable like <code>smolify</code>.</li>
+</ul>
+</li>
+<li>Expand <strong>&#34;⚙️ Advanced Options&#34;</strong> in Smolify. <img src="img/93ac7cded94d4b99.png"></li>
+<li>Enter your <strong>HF Write Token</strong> and your <strong>Username/Org</strong> (e.g., <code>rishiraj</code>).</li>
+</ol>
+<h2 is-upgraded>Initialize Distillation</h2>
+<p>Click <strong>Initialize Foundry Pipeline</strong>. The system will now:</p>
+<ol type="1">
+<li>Generate ~10,000 synthetic examples.</li>
+<li>Spin up an L4 GPU node.</li>
+<li>Fine-tune a <strong>Gemma 3 (270M)</strong> model on your data.</li>
+</ol>
+<p><img src="img/d3ee8f332a26f09b.png"><em>(The Foundry Status log provides real-time JSON feedback, showing the Job ID, current progress, and the number of high-fidelity records synthesized)</em></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Step 6: Inference &amp; Results" duration="1">
+        <p>When the process finishes, you will see a success banner.</p>
+<p><img src="img/5d0e810d57e1d679.png"><em>(Success! You will be presented with direct links to your Open Model and Open Dataset)</em></p>
+<p>When the status changes to <strong>Distillation Complete</strong>, click the <strong>📦 Open Model</strong> link. You can also view the raw JSON result containing the model URL.</p>
+<h2 is-upgraded>Your Artifacts</h2>
+<p>Smolify automatically generates two repositories on Hugging Face:</p>
+<ol type="1">
+<li><strong>The Dataset:</strong> A visible record of the synthetic data used for training. <img src="img/6478738768ec5f12.png"></li>
+<li><strong>The Model:</strong> Your fine-tuned DSLM, complete with a model card describing the architecture. <img src="img/17c78b4ea1c1f517.png"></li>
+</ol>
+<h2 is-upgraded>Run Locally on CPU</h2>
+<p>Your model is optimized for edge deployment. Because we distilled the intelligence into a lightweight Gemma architecture, you can run it using standard <code>transformers</code> on a CPU.</p>
+<pre><code language="language-python" class="language-python">from transformers import AutoProcessor, AutoModelForCausalLM
+
+# Your specific model ID will be in the results link
+model_id = &#34;your-username/smolified-project-name&#34; 
+
+processor = AutoProcessor.from_pretrained(model_id, device_map=&#34;auto&#34;)
+model = AutoModelForCausalLM.from_pretrained(model_id, dtype=&#34;auto&#34;, device_map=&#34;auto&#34;) # Runs on CPU!
+
+message = [
+    {&#34;role&#34;: &#34;system&#34;, &#34;content&#34;: &#34;Your System Prompt&#34;},
+    {&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: &#34;Your Input&#34;}
+]
+
+inputs = processor.apply_chat_template(message, add_generation_prompt=True, return_dict=True, return_tensors=&#34;pt&#34;)
+
+out = model.generate(**inputs.to(model.device), pad_token_id=processor.eos_token_id, max_new_tokens=128)
+output = processor.decode(out[0][len(inputs[&#34;input_ids&#34;][0]):], skip_special_tokens=True)
+
+print(output)
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Congratulations" duration="1">
+        <p>You have successfully distilled SOTA intelligence into a local Gemma model!</p>
+<h2 class="checklist" is-upgraded>What we&#39;ve covered</h2>
+<ul class="checklist">
+<li>Understanding the shift from generalist APIs to specific local models.</li>
+<li>The theory of Knowledge Distillation and Teacher-Student topologies.</li>
+<li>Using Smolify to synthesize data and fine-tune Gemma.</li>
+<li>Running your proprietary model on CPU.</li>
+</ul>
+<h2 is-upgraded>Next Steps</h2>
+<ul>
+<li>Test your model against the &#34;Teacher&#34; to see how close the performance is.</li>
+<li>Try deploying this model to an Android device using MediaPipe.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
