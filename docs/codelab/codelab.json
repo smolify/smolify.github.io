@@ -3,12 +3,12 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2026-02-16T22:50:06+05:30",
-  "id": "build-with-gemma",
+  "updated": "2026-02-16T23:10:31+05:30",
+  "id": "codelab",
   "duration": 60,
   "title": "Build with Gemma locally on CPU by Distilling SOTA Intelligence",
   "summary": "In this deep-dive workshop codelab, we will unpack the science behind the shift from “God Models” to Domain Specific Language Models (DSLMs). You will learn the theory of Knowledge Distillation and use Smolify to distill SOTA reasoning into a lightweight Gemma model that runs locally on CPU.",
-  "source": "build-with-gemma.md",
+  "source": "codelab.md",
   "theme": "",
   "status": [
     "published"
@@ -21,5 +21,5 @@
   ],
   "feedback": "https://github.com/smolify/smolify.github.io/issues",
   "ga": "G-CZR2FBNWT5",
-  "url": "build-with-gemma"
+  "url": "codelab"
 }
