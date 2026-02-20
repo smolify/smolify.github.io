@@ -201,34 +201,305 @@
     <!--      PASTE YOUR MARKDOWN CONTENT BELOW THIS LINE        -->
     <!-- ======================================================= -->
     <script type="text/markdown" id="markdown-source">
-# Welcome to Smolify
+# Android Deployment
 
-**Intelligence, Distilled.**
+This guide covers how to build and install the ExecuTorch Llama demo app on an Android device (tested using Pixel 8 but will also work on other Android phones too) using a Linux/Mac command line environment. This approach minimizes dependencies (no Android Studio required) and offloads the heavy build process to your computer.
 
-Smolify is a foundry for **Domain Specific Language Models (DSLMs)**. We allow developers to distill the reasoning capabilities of massive, general-purpose models (like GPT-5, Claude 4.5, and Gemini 3) into ultra-compact, sovereign models (like Gemma 3 270M) that you own, host, and run anywhere.
+### Requirements
 
-### Why Distill?
+Ensure your development machine has the following installed:
 
-*   **Sovereignty:** You own the weights. It does not rely on an API connection to OpenAI or Google.
-*   **Privacy & Cost:** Run locally on device (CPU/GPU). Data never leaves your perimeter. Inference costs $0.
-*   **Latency:** Sub-10ms response times on edge hardware. Put it on a USB drive, a drone, or a Raspberry Pi.
+* Java 17 (Java 21 is often the default but may cause build issues)
+* Git
+* Wget / Curl
+* Android Command Line Tools
+* [Guide to install](https://www.xda-developers.com/install-adb-windows-macos-linux/) and setup `adb` on your android and your computer
 
-### The Foundry Process
+#### Verification
 
-1.  **Define:** You describe a capability (e.g., "Clinical Scribe").
-2.  **Synthesize:** We generate thousands of high-fidelity synthetic training examples.
-3.  **Distill:** We fine-tune a specialized Nano-LLM using Neural Distillation.
-4.  **Deploy:** You download the weights and run them via `transformers` or `vLLM`.
+Check that your Java version matches 17.x:
+
+```bash
+# Output should look like: openjdk version "17.0.x"
+java -version
+```
+
+If it does not match, install it via Ubuntu/Debian:
+
+```bash
+sudo apt install openjdk-17-jdk
+```
+
+Then set it as default or export `JAVA_HOME`:
+
+```bash
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export PATH=$JAVA_HOME/bin:$PATH
+```
+
+If you are on a different OS or distribution, you might want to follow [this guide](https://docs.oracle.com/en/java/javase/25/install/overview-jdk-installation.html) or just ask your favorite LLM to guide you through.
+
+### Step 1: Install Android SDK & NDK
+
+Set up a minimal Android SDK environment without the full Android Studio.
+
+1\. Create the SDK directory:
+
+```bash
+mkdir -p ~/android-sdk/cmdline-tools
+cd ~/android-sdk
+```
+
+2. Install Android Command Line Tools
+
+```bash
+wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+unzip commandlinetools-linux-*.zip -d cmdline-tools
+
+# Important: Reorganize to satisfy SDK structure
+mv cmdline-tools/cmdline-tools cmdline-tools/latest
+```
+
+### Step 2: Configure Environment Variables
+
+Add these to your `~/.bashrc` or `~/.zshrc`:
+
+```bash
+export ANDROID_HOME=$HOME/android-sdk
+export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+export PATH=$ANDROID_HOME/platform-tools:$PATH
+```
+
+Reload them:
+
+```bash
+source ~/.zshrc  # or ~/.bashrc depending on your shell
+```
+
+### Step 3: Install SDK Components
+
+ExecuTorch requires specific NDK versions.
+
+```bash
+# Accept licenses
+yes | sdkmanager --licenses
+
+# Install API 34 and NDK 25
+sdkmanager "platforms;android-34" "platform-tools" "build-tools;34.0.0" "ndk;25.0.8775105"
+```
+
+Set the NDK variable:
+
+```bash
+export ANDROID_NDK=$ANDROID_HOME/ndk/25.0.8775105
+```
+
+### Step 4: Get the Code
+
+We use the `executorch-examples` repository, which contains the updated Llama demo.
+
+```bash
+cd ~
+git clone https://github.com/meta-pytorch/executorch-examples.git
+cd executorch-examples
+```
+
+### Step 5: Fix Common Compilation Issues
+
+Note that the current code doesn't have these issues but we have faced them previously and might be helpful to you:
+
+**Fix "SDK Location not found":**
+
+Create a `local.properties` file to explicitly tell Gradle where the SDK is:
+
+```bash
+echo "sdk.dir=$HOME/android-sdk" > llm/android/LlamaDemo/local.properties
+```
+
+**Fix `cannot find symbol` error:**
+
+The current code uses a deprecated method `getDetailedError()`. Patch it with this command:
+
+```bash
+sed -i 's/e.getDetailedError()/e.getMessage()/g' llm/android/LlamaDemo/app/src/main/java/com/example/executorchllamademo/MainActivity.java
+```
+
+### Step 6: Build the APK
+
+This step compiles the app and native libraries.
+
+1. Navigate to the Android project:
+
+   ```bash
+   cd llm/android/LlamaDemo
+   ```
+2. Build with Gradle (explicitly set `JAVA_HOME` to 17 to avoid toolchain errors):&#x20;
+
+   Note: The first run will take a few minutes.
+
+   ```bash
+   export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+   ./gradlew :app:assembleDebug
+   ```
+3. The final generated apk can be found at:
+
+   ```
+   app/build/outputs/apk/debug/app-debug.apk
+   ```
+
+### Step 7: Install on your Android device
+
+You have two options to install the app.
+
+#### Option A: Using ADB (Wired/Wireless)
+
+If you have `adb` access to your phone:
+
+```bash
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+#### Option B: Direct File Transfer
+
+If you are on a remote VM or don't have a cable:
+
+1. Upload the app-debug.apk to a place where you can download from on the phone
+2. Download it on your phone
+3. Tap to Install (Enable "Install from unknown sources" if prompted).
+
+### Step 8: Transfer Model Files
+
+The app needs the .pte model and tokenizer files.
+
+1. Transfer Files: Move your model.pte and tokenizer.bin (or tokenizer.model) to your phone's storage (e.g., Downloads folder).
+2. Open LlamaDemo App: Launch the app on your phone.
+3. Select Model
+4. Tap the Settings (gear icon) or the file picker.
+5. Navigate to your Download folder.
+6. Select your .pte file.
+7. Select your tokenizer file.
+
+Done! You can now chat with the LLM directly on your device.
+
+### Troubleshooting
+
+* Build Fails? Check java -version. It MUST be 17.
+* Model not loading? Ensure you selected both the `.pte` AND the `tokenizer`.
+* App crashing? Valid `.pte` files must be exported specifically for ExecuTorch (usually XNNPACK backend for CPU).
+
+### Transferring model to your phone
+
+Currently, `executorchllama` app that we built only supports loading the model from a specific directory on Android that is unfortunately not accessible via regular file managers. But we can save the model files to the said directory using adb.
+
+#### Make sure that adb is running properly and connected
+
+```shellscript
+adb devices 
+```
+
+{% columns %}
+{% column %}
+
+1. If you have connected via wireless debugging, you’d see something like this:
+
+   <div align="left"><figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FX1uYoIhXRdboBK36FX9D%2Funknown.png?alt=media&#x26;token=32955e17-56b7-4e2c-a06d-a1558d51427b" alt="" width="375"><figcaption></figcaption></figure></div>
+
+   Or if you have connected via a wire/cable:
+
+   <div align="left"><figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FBu88g0y9ivw0UQYsUyJJ%2Funknown.png?alt=media&#x26;token=8eda0918-398f-486d-a1f2-6976f895a7c2" alt="" width="269"><figcaption></figcaption></figure></div>
+
+   If you haven’t given permissions to the computer to access your phone:
+
+   <div align="left"><figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FSFkcwJyvgTcjvsPzCoDc%2Funknown.png?alt=media&#x26;token=cb4bbdb6-4b83-473c-8a96-bbf75d8ba49e" alt="" width="269"><figcaption></figcaption></figure></div>
+
+{% endcolumn %}
+
+{% column %}
+2\. Then you need to check your phone for a pop up dialog that looks like (which you might want to allow)
+
+<figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FfqqtrC2590Wd71uzzbA5%2Funknown.png?alt=media&#x26;token=e9a15b34-d794-47d1-ac63-cc5809f3e650" alt="" width="180"><figcaption></figcaption></figure>
+{% endcolumn %}
+{% endcolumns %}
+
+Once done, it's time to create the folder where we need to place the `.pte` and `tokenizer.json` files.
+
+Create the said directory on the phone’s path.
+
+```shellscript
+adb shell mkdir -p /data/local/tmp/llama
+adb shell chmod 777 /data/local/tmp/llama
+```
+
+Verify that the directory is created properly.
+
+```shellscript
+adb shell ls -l /data/local/tmp/llama
+total 0
+```
+
+Push the contents to the said directory. This might take a couple of minutes to more depending on your computer, the connection and the phone. Please be patient.
+
+```shellscript
+adb push <path_to_tokenizer.json on your computer> /data/local/tmp/llama
+adb push <path_to_model.pte on your computer> /data/local/tmp/llama
+```
+
+<figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FwqtWYiRBiyAOhi3aecn9%2Fimage.png?alt=media&#x26;token=ab04a1d1-194d-420d-a980-3336f90e7e42" alt="" width="563"><figcaption></figcaption></figure>
+
+{% columns %}
+{% column %}
+
+1. Open the `executorchllamademo` app you installed in Step 5, then tap the gear icon in the top-right to open Settings.
+2. Tap the arrow next to Model to open the picker and select a model.\
+   If you see a blank white dialog with no filename, your ADB model push likely failed - redo that step. Also note it may initially show “no model selected.”
+3. After you select a model, the app should display the model filename.
+   {% endcolumn %}
+
+{% column %}
+
+<div><figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FmwIP3Fg2xWNfq5h719rE%2Funknown.png?alt=media&#x26;token=3b560fc2-6820-4dd1-a8fa-1a76e5523672" alt=""><figcaption></figcaption></figure> <figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2F5ft9HycpKPtCYhWgTmMn%2Funknown.png?alt=media&#x26;token=dc35909b-9541-4fb1-9c7a-7a4be242afd4" alt=""><figcaption></figcaption></figure></div>
+{% endcolumn %}
+{% endcolumns %}
+
+{% columns %}
+{% column %}
+5\. Now repeat the same for tokenizer. Click on the arrow next to the tokenizer field and select the corresponding file.
+
+<figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2Fhga4tR05b5D0IqLvB2PM%2Funknown.png?alt=media&#x26;token=fb00738e-9429-4014-836d-3e35821279cd" alt="" width="180"><figcaption></figcaption></figure>
+{% endcolumn %}
+
+{% column %}
+6\. You might need to select the model type depending on which model you're uploading. Qwen3 is selected here.
+
+<figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FjAZd67Ruub3gfblDrwUs%2Funknown.png?alt=media&#x26;token=cf0f6938-2e9c-4bf4-b0f2-c7512b5506ad" alt="" width="180"><figcaption></figcaption></figure>
+{% endcolumn %}
+
+{% column %}
+7\. Once you have selected both files, click on the "Load Model" button.
+
+<figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FGaPBdnweeeRIWgWsK9Fg%2Funknown.png?alt=media&#x26;token=73ec7e74-d9f8-4080-a6b0-ef239fd640d9" alt="" width="180"><figcaption></figcaption></figure>
+{% endcolumn %}
+{% endcolumns %}
+
+{% columns %}
+{% column %}
+8\. It will take you back to the original screen with the chat window, and it might show "model loading". It might take a few seconds to finish loading depending on your phone's RAM and storage speeds.
+
+<figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2F1XHwMpnWEB2JiwNAR6hy%2Funknown.png?alt=media&#x26;token=18bcff85-b67c-4bbe-a961-28f5c5e58ce3" alt="" width="180"><figcaption></figcaption></figure>
+{% endcolumn %}
+
+{% column %}
+9\. Once it says "successfully loaded model," you can start chatting with the model.\
+\
+Et Voila, you now have an LLM running natively on your Android phone!
+
+<figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FRoYe3aDedHoovwfPJVOh%2Funknown.png?alt=media&#x26;token=e9a2cc0a-2407-4c0b-adf1-6e2ba122212c" alt="" width="180"><figcaption></figcaption></figure>
+{% endcolumn %}
+{% endcolumns %}
 
 ---
 
-### Documentation Map
-
-*   [**Get Started**](/docs/get-started): Launch your first distillation job in 5 minutes.
-*   [**vLLM Deployment**](/docs/vllm): Get higher throughput and an API server.
-*   [**iOS Deployment**](/docs/ios): Tutorial to get your model running on iPhones.
-*   [**Android Deployment**](/docs/android): Tutorial to get your model running on Androids.
-*   [**Model Architecture**](/docs/models): Technical specs of the Gemma 3-based output models.
+[**< Back to Documentation**](/docs/index)
     </script>
     <!-- ======================================================= -->
     <!--           END OF MARKDOWN CONTENT AREA                  -->

@@ -201,34 +201,240 @@
     <!--      PASTE YOUR MARKDOWN CONTENT BELOW THIS LINE        -->
     <!-- ======================================================= -->
     <script type="text/markdown" id="markdown-source">
-# Welcome to Smolify
+# iOS Deployment
 
-**Intelligence, Distilled.**
+Tutorial to get your model running on iOS (tested on an iPhone 16 Pro but will work for other iPhones too). You will need a physical macOS based device which must be capable of running XCode 15.
 
-Smolify is a foundry for **Domain Specific Language Models (DSLMs)**. We allow developers to distill the reasoning capabilities of massive, general-purpose models (like GPT-5, Claude 4.5, and Gemini 3) into ultra-compact, sovereign models (like Gemma 3 270M) that you own, host, and run anywhere.
+### macOS Development Environment Setup
 
-### Why Distill?
+**Install Xcode & Command Line Tools**
 
-*   **Sovereignty:** You own the weights. It does not rely on an API connection to OpenAI or Google.
-*   **Privacy & Cost:** Run locally on device (CPU/GPU). Data never leaves your perimeter. Inference costs $0.
-*   **Latency:** Sub-10ms response times on edge hardware. Put it on a USB drive, a drone, or a Raspberry Pi.
+1. Install Xcode from the Mac App Store (must be version 15 or later)
+2. Open Terminal and verify your installation: `xcode-select -p`
+3. Install command line tools and accept the license:&#x20;
+   1. `xcode-select --install`
+   2. `sudo xcodebuild -license accept`
+4. Launch Xcode for the first time and install any additional components when prompted
+5. If asked to select platforms, choose iOS 18 and download it for simulator access
 
-### The Foundry Process
+{% hint style="warning" %}
+Important: The first Xcode launch is crucial! Don't skip those extra component installations! Check [here](https://developer.apple.com/documentation/xcode/downloading-and-installing-additional-xcode-components) and [here](https://developer.apple.com/documentation/safari-developer-tools/adding-additional-simulators) for additional help.
+{% endhint %}
 
-1.  **Define:** You describe a capability (e.g., "Clinical Scribe").
-2.  **Synthesize:** We generate thousands of high-fidelity synthetic training examples.
-3.  **Distill:** We fine-tune a specialized Nano-LLM using Neural Distillation.
-4.  **Deploy:** You download the weights and run them via `transformers` or `vLLM`.
+**Verify Everything Works:**  `xcode-select -p`
+
+You should see a path printed. If not, repeat step 3.
+
+![](https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FJii1jArd6GQrdaCMHvyR%2Funknown.png?alt=media\&token=bd8b7a75-23e3-4474-b84b-ab9ad34cc401)
+
+### Apple Developer Account Setup
+
+**For Physical devices only!**
+
+{% hint style="info" %}
+Skip this entire section if you're only using the iOS Simulator. You only need a paid developer account for deployment to a physical iPhone.
+{% endhint %}
+
+{% columns %}
+{% column %}
+**Create Your Apple ID**
+
+Don't have an Apple ID?[ Sign up here](https://support.apple.com/en-us/108647?device-type=iphone).
+
+#### **Add Your Account to Xcode**
+
+1. Open Xcode
+2. Navigate to Xcode → Settings → Accounts
+3. Click the + button and select Apple ID
+4. Sign in with your regular Apple ID
+   {% endcolumn %}
+
+{% column %}
+
+<div align="left"><figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FxG5ifHNeI6xKWqHw1pxL%2Funknown.png?alt=media&#x26;token=875fb5e4-e5f3-4c88-9af6-cb4e587975ca" alt="" width="563"><figcaption></figcaption></figure></div>
+{% endcolumn %}
+{% endcolumns %}
+
+#### **Enroll in the Apple Developer Program**
+
+ExecuTorch requires the `increased-memory-limit capability`, which needs a paid developer account:
+
+1. Visit[ developer.apple.com](https://developer.apple.com)
+2. Sign in with your Apple ID
+3. Enroll in the Apple Developer Program
+
+### Setup the ExecuTorch Demo App
+
+**Grab the Example Code:**
+
+```bash
+# Download the LLM example app directly
+curl -L https://github.com/meta-pytorch/executorch-examples/archive/main.tar.gz | \
+  tar -xz --strip-components=2 executorch-examples-main/llm/apple
+```
+
+{% columns %}
+{% column %}
+**Open in Xcode**
+
+1. Open `apple/etLLM.xcodeproj` in Xcode
+2. In the top toolbar, select `iPhone 16 Pro` Simulator as your target device
+3. Hit Play (▶️) to build and run
+
+🎉 Success! The app should now launch in the simulator. It won't work yet, we need to add your model.
+{% endcolumn %}
+
+{% column %}
+
+<figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FA4n2u44u9sLlauCkhf1b%2Funknown.png?alt=media&#x26;token=c93fef18-aab6-47cb-b301-d895466314f6" alt="" width="563"><figcaption></figcaption></figure>
+{% endcolumn %}
+{% endcolumns %}
+
+### Deploying to Simulator
+
+&#x20;**No Developer Account is needed.**
+
+**Prepare Your Model Files**
+
+1. Stop the simulator in Xcode (press the stop button)
+2. Navigate to your HuggingFace Hub repo (if not saved locally)
+3. Download these two files:
+   1. `qwen3_0.6B_model.pte` (your exported model)
+   2. tokenizer.json (the tokenizer)
+
+**Create a Shared Folder on the Simulator**
+
+1. Click the virtual Home button on the simulator
+2. Open the Files App → Browse → On My iPhone
+3. Tap the ellipsis (•••) button and create a new folder named `Qwen3test`
+
+**Transfer Files Using the Terminal**
+
+```bash
+# Find the simulator's hidden folder
+find ~/Library/Developer/CoreSimulator/Devices/ -type d -iname "*Qwen3test*"
+```
+
+When you see the folder run the following:
+
+```bash
+cp tokenizer.json /path/to/Qwen3test/tokenizer.json
+cp qwen3_0.6B_model.pte /path/to/Qwen3test/qwen3_model.pte
+```
+
+**Load & Chat**
+
+{% columns %}
+{% column %}
+
+1. Return to the etLLM app in the simulator. Tap it to launch.
+
+<div align="left"><figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2F55YWFJN49DCiHsy9EKOA%2Funknown.png?alt=media&#x26;token=4f8c8e90-df0b-4121-99eb-24437580724b" alt="" width="375"><figcaption></figcaption></figure></div>
+{% endcolumn %}
+
+{% column %}
+2\. Load the model and tokenizer from the Qwen3test folder
+
+<figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FpwUCX0nfarr6HSUd0pd3%2Funknown.png?alt=media&#x26;token=923b6ad3-d6e6-4e64-8223-947410c2218e" alt="" width="188"><figcaption></figcaption></figure>
+{% endcolumn %}
+
+{% column %}
+3\. Start chatting with your fine-tuned model! 🎉
+
+<div align="left"><figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FJrEzy1bvVeb4qLFxPFit%2Funknown.png?alt=media&#x26;token=36b7c70b-f014-4323-bdc5-cc5bf0fd12af" alt="" width="188"><figcaption></figcaption></figure></div>
+{% endcolumn %}
+{% endcolumns %}
+
+### Deploying to Your Physical iPhone
+
+**Initial Device Setup**
+
+1. Connect your iPhone to your Mac via USB
+2. Unlock your iPhone and tap "Trust This Device"
+3. In Xcode, go to Window → Devices and Simulators
+4. Wait until your device appears on the left (it may show "Preparing" for a bit)
+
+**Configure Xcode Signing**
+
+{% columns %}
+{% column %}
+
+1. Add your Apple Account: Xcode → Settings → Accounts → `+`
+2. In the project navigator, click the etLLM project (blue icon)
+3. Select etLLM under TARGETS
+4. Go to the Signing & Capabilities tab
+5. Check "Automatically manage signing"
+6. Select your Team from the dropdown
+   {% endcolumn %}
+
+{% column %}
+
+<figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FFm4a47e9Wuo7JiNbEeYl%2Funknown.png?alt=media&#x26;token=3f958363-6c0d-4608-8895-8376b0e1b1b1" alt="" width="375"><figcaption></figcaption></figure>
+{% endcolumn %}
+{% endcolumns %}
+
+{% hint style="warning" %}
+Change the Bundle Identifier to something unique (e.g., com.yourname.etLLM). This fixes 99% of provisioning profile errors
+{% endhint %}
+
+**Add the Required Capability**
+
+1. Still in Signing & Capabilities, click + Capability
+2. Search for "Increased Memory Limit" and add it
+
+**Build & Run**
+
+1. In the top toolbar, select your physical iPhone from the device selector
+2. Hit Play (▶️) or press Cmd + R
+
+**Trust the Developer Certificate**
+
+Your first build will fail—this is normal!
+
+1. On your iPhone, go to Settings → Privacy & Security → Developer Mode
+2. Toggle On
+3. Agree and accept notices
+4. Restart device, return to Xcode and hit Play again
+
+{% hint style="warning" %}
+Developer Mode allows XCode to run and install apps on your iPhone
+{% endhint %}
+
+**Transfer Model Files to Your iPhone**
+
+<figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FqAGQov6BgjlDSqA5GENN%2Funknown.png?alt=media&#x26;token=386b17df-703c-4e2c-9969-895577a98f0a" alt="" width="375"><figcaption></figcaption></figure>
+
+1. Once the app is running, open Finder on your Mac
+2. Select your iPhone in the sidebar
+3. Click the Files tab
+4. Expand etLLM
+5. Drag and drop your .pte and tokenizer.json files directly into this folder
+6. Be patient! These files are large and may take a few minutes
+
+**Load & Chat**
+
+{% columns %}
+{% column %}
+
+1. On your iPhone, switch back to the etLLM app
+
+<div align="center"><figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FXY4EPFNcxaaBpjVroja3%2Funknown.jpeg?alt=media&#x26;token=7e8eca62-a5de-4705-9f0c-832b40579e78" alt="" width="188"><figcaption></figcaption></figure></div>
+
+2. Load the model and tokenizer from the app interface
+
+<div align="center"><figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FUzKWYRNR02vkVn5S3SQ5%2Funknown.jpeg?alt=media&#x26;token=84a85440-bf98-438d-a035-d8a11912a7a8" alt="" width="188"><figcaption></figcaption></figure></div>
+{% endcolumn %}
+
+{% column %}
+3\. Your fine-tuned Qwen3 is now running natively on your iPhone!
+
+<figure><img src="https://3215535692-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FxhOjnexMCB3dmuQFQ2Zq%2Fuploads%2FBX1nCLPbsnuRQchJXyAS%2Funknown.png?alt=media&#x26;token=d276d4d6-2fc7-4cba-87f1-634aaea29884" alt="" width="184"><figcaption></figcaption></figure>
+{% endcolumn %}
+{% endcolumns %}
 
 ---
 
-### Documentation Map
-
-*   [**Get Started**](/docs/get-started): Launch your first distillation job in 5 minutes.
-*   [**vLLM Deployment**](/docs/vllm): Get higher throughput and an API server.
-*   [**iOS Deployment**](/docs/ios): Tutorial to get your model running on iPhones.
-*   [**Android Deployment**](/docs/android): Tutorial to get your model running on Androids.
-*   [**Model Architecture**](/docs/models): Technical specs of the Gemma 3-based output models.
+[**< Back to Documentation**](/docs/index)
     </script>
     <!-- ======================================================= -->
     <!--           END OF MARKDOWN CONTENT AREA                  -->
