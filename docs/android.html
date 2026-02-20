@@ -76,7 +76,6 @@
         }
 
         /* --- TYPOGRAPHY FOR MARKDOWN (The Prose) --- */
-        /* This ensures pasted MD looks like the site design */
         .prose-content h1 {
             font-size: 2.5rem; line-height: 1.2; font-weight: 800; color: var(--green-vedic); margin-bottom: 1.5rem; margin-top: 0;
             background: linear-gradient(135deg, #064E3B 0%, #D97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -86,15 +85,15 @@
         .prose-content p { font-size: 1rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 1.25rem; font-weight: 300; }
         
         .prose-content img {
-            max-width: 100%;       /* Ensure it never overflows width */
-            max-height: 500px;     /* Cap the height so square images don't dominate */
-            width: auto;           /* Maintain aspect ratio */
+            max-width: 100%;       
+            max-height: 500px;     
+            width: auto;           
             height: auto;
-            display: block;        /* Prevent inline quirks */
-            margin: 2rem auto;     /* Center horizontally */
-            border-radius: 1rem;   /* Match theme rounding */
-            border: 1px solid rgba(6, 78, 59, 0.1); /* Subtle border */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); /* Lift off page */
+            display: block;        
+            margin: 2rem auto;     
+            border-radius: 1rem;   
+            border: 1px solid rgba(6, 78, 59, 0.1); 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
         }
 
         .prose-content a { color: var(--saffron-marigold); font-weight: 500; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.2s; }
@@ -121,6 +120,60 @@
 
         /* Hr */
         .prose-content hr { border: 0; height: 1px; background: rgba(6,78,59,0.1); margin: 3rem 0; }
+
+        /* --- GITBOOK CUSTOM ELEMENTS STYLING --- */
+        
+        /* Hints */
+        .gitbook-hint {
+            padding: 1.25rem 1.5rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+            border-left: 4px solid;
+            font-size: 0.95rem;
+        }
+        .gitbook-hint .hint-content p {
+            margin-bottom: 0.75rem;
+            color: inherit; /* Pulls color correctly depending on parent */
+        }
+        .gitbook-hint .hint-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .hint-warning {
+            background-color: rgba(217, 119, 6, 0.08);
+            border-left-color: var(--saffron-marigold);
+            color: #92400e;
+        }
+        .hint-info {
+            background-color: rgba(6, 78, 59, 0.05);
+            border-left-color: var(--green-vedic);
+            color: var(--green-vedic);
+        }
+        
+        .hint-warning a { color: #b45309; border-bottom: 1px solid rgba(180, 83, 9, 0.3); }
+        .hint-info a { color: #064E3B; border-bottom: 1px solid rgba(6, 78, 59, 0.3); }
+
+        /* Columns */
+        .gitbook-columns {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin: 2.5rem 0;
+            width: 100%;
+        }
+        @media (min-width: 768px) {
+            .gitbook-columns {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+        }
+        .gitbook-column {
+            flex: 1;
+            min-width: 0; /* Prevents overflow from large content */
+        }
+        .gitbook-column img {
+            margin: 1rem auto; /* Tighter image margins inside a layout column */
+        }
 
         /* Mobile Menu */
         #mobile-menu { transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out; max-height: 0; opacity: 0; overflow: hidden; }
@@ -526,21 +579,52 @@ Et Voila, you now have an LLM running natively on your Android phone!
         const mobileMenu = document.getElementById('mobile-menu');
         menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
 
-        // 3. Render Markdown
+        // 3. Render Markdown & Custom GitBook Components
         document.addEventListener('DOMContentLoaded', () => {
             const rawMarkdown = document.getElementById('markdown-source').textContent;
             const container = document.getElementById('content-render');
             
             // Configure Marked.js
             marked.use({
-                breaks: true, // Enable line breaks
-                gfm: true     // Enable GitHub Flavored Markdown (Tables, etc)
+                breaks: true, 
+                gfm: true     
             });
 
-            // Parse and Inject
-            container.innerHTML = marked.parse(rawMarkdown);
+            // Make a copy to manipulate
+            let md = rawMarkdown;
 
-            // Re-run Lucide icons in case the markdown had icon tags (unlikely but good practice)
+            // --- Pre-Process GitBook Syntaxes ---
+            
+            // A. Process Hints {% hint style="..." %} ... {% endhint %}
+            md = md.replace(/{%\s*hint\s+style="([^"]+)"\s*%}([\s\S]*?){%\s*endhint\s*%}/g, (match, style, content) => {
+                let icon = '';
+                if (style === 'warning') icon = '<i data-lucide="alert-triangle" class="w-5 h-5 mr-2 text-amber-600"></i>';
+                if (style === 'info') icon = '<i data-lucide="info" class="w-5 h-5 mr-2 text-emerald-800"></i>';
+                
+                // Capitalize title
+                const title = style.charAt(0).toUpperCase() + style.slice(1);
+                
+                // Parse inner markdown and wrap in custom HTML container
+                return `<div class="gitbook-hint hint-${style}">
+                            <div class="font-bold mb-3 flex items-center tracking-tight">${icon} ${title}</div>
+                            <div class="hint-content">${marked.parse(content.trim())}</div>
+                        </div>`;
+            });
+
+            // B. Process Inner Columns {% column %} ... {% endcolumn %}
+            md = md.replace(/{%\s*column\s*%}([\s\S]*?){%\s*endcolumn\s*%}/g, (match, content) => {
+                return `<div class="gitbook-column">\n\n${marked.parse(content.trim())}\n\n</div>`;
+            });
+
+            // C. Process Outer Columns Wrapper {% columns %} ... {% endcolumns %}
+            md = md.replace(/{%\s*columns\s*%}([\s\S]*?){%\s*endcolumns\s*%}/g, (match, content) => {
+                return `<div class="gitbook-columns">\n\n${content.trim()}\n\n</div>`;
+            });
+
+            // Parse final sanitized markdown and Inject
+            container.innerHTML = marked.parse(md);
+
+            // Re-run Lucide icons (needed for the dynamically added hint icons)
             lucide.createIcons();
         });
     </script>
